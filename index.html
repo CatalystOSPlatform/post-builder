@@ -39,24 +39,7 @@
 
 <div style="height:100vh; min-height:680px; background:#EEEDEA; color:#1d2226; overflow:hidden; display:flex; flex-direction:column; position:relative;">
 
-  <!-- ===================== SIGN-IN GATE ===================== -->
-  <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
-  <div style="position:absolute; inset:0; z-index:120; background:linear-gradient(150deg,#0e2236,#1e4a85 55%,#22867c); display:flex; align-items:center; justify-content:center; padding:24px;">
-    <div style="width:380px; max-width:100%; background:#fff; border-radius:18px; box-shadow:0 30px 80px rgba(0,0,0,0.4); padding:36px 32px; text-align:center;">
-      <div style="font-size:10.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#b0b0ab;">Connetic · Post Builder</div>
-      <h1 style="font-size:23px; font-weight:800; margin:14px 0 6px; color:#1d2226;">Sign in to your workspace</h1>
-      <p style="font-size:13.5px; line-height:1.5; color:#6a6a66; margin:0 0 26px;">Your posts save to the cloud and follow you on every device.</p>
-      <button class="pmc-tool" onClick="{{ signIn }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:11px; padding:13px; border-radius:10px; border:1px solid #dcdbd7; background:#fff; cursor:pointer; font-size:14.5px; font-weight:600; color:#1d2226;">
-        <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        Continue with Google
-      </button>
-      <sc-if value="{{ cloudErr }}" hint-placeholder-val="{{ false }}">
-        <div style="margin-top:12px; font-size:12px; color:#b4332b;">Couldn't sign in ({{ cloudErr }}). Make sure this site's domain is added in Firebase → Authentication → Settings → Authorized domains.</div>
-      </sc-if>
-      <button class="pmc-back" onClick="{{ skipAuth }}" style="margin-top:18px; background:transparent; border:none; cursor:pointer; font-size:12.5px; color:#9a9a95; text-decoration:underline;">Continue on this device only</button>
-    </div>
-  </div>
-  </sc-if>
+  <!-- (sign-in removed — open shared workspace: anyone with the URL edits the same data) -->
 
 
   <!-- ===================== GALLERY VIEW ===================== -->
@@ -93,15 +76,10 @@
             <label style="font-size:12.5px; font-weight:600; color:#5e5e5a; display:block; margin:14px 0 7px;">Title (applies to every post)</label>
             <textarea class="pmc-input" value="{{ bradTitle }}" onInput="{{ setBradTitle }}" rows="2" style="width:100%; padding:10px 12px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.4; color:#1d2226; resize:vertical;"></textarea>
             <button onClick="{{ closeBrad }}" style="width:100%; margin-top:12px; background:#1e4a85; border:1px solid #1e4a85; padding:10px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">Done</button>
-            <sc-if value="{{ cloudUser }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top:13px; padding-top:13px; border-top:1px solid #ececea; display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                <div style="min-width:0;">
-                  <div style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#b0b0ab;">Signed in · synced</div>
-                  <div style="font-size:12px; color:#5e5e5a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ cloudEmail }}</div>
-                </div>
-                <button class="pmc-back" onClick="{{ signOutCloud }}" style="flex:none; background:#fdecec; border:1px solid #f3b4b4; padding:6px 11px; border-radius:7px; cursor:pointer; font-size:12px; font-weight:600; color:#b4332b;">Sign out</button>
-              </div>
-            </sc-if>
+            <div style="margin-top:13px; padding-top:13px; border-top:1px solid #ececea;">
+              <div style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#b0b0ab;">Team workspace · live</div>
+              <div style="font-size:12px; color:#5e5e5a;">Every change saves automatically for the whole team.</div>
+            </div>
           </div>
         </sc-if>
       </div>
@@ -476,9 +454,17 @@ class Component extends DCLogic {
   }
 
   SAVE_KEY = "conneticPostBuilder.v7";
+  SHARED_ID = "connetic-team";   // one shared workspace for the whole team
   _loadSaved(){ try{ const r=localStorage.getItem(this.SAVE_KEY); if(r){ const d=JSON.parse(r); if(d&&Array.isArray(d.posts)&&d.posts.length) return d; } }catch(e){} return null; }
   _persist(){ try{ const {posts,photo,photoColor,bradTitle,selectedMonths,team}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradTitle,selectedMonths,team})); }catch(e){} this._cloudSave(); }
-  componentDidUpdate(pp, ps){ if(!ps) return; if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradTitle!==this.state.bradTitle || ps.selectedMonths!==this.state.selectedMonths || ps.team!==this.state.team) this._persist(); }
+  componentDidUpdate(pp, ps){
+    if(!ps) return;
+    if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradTitle!==this.state.bradTitle || ps.selectedMonths!==this.state.selectedMonths || ps.team!==this.state.team) this._persist();
+    // A teammate's update arrived while editing — apply it now that editing is done.
+    if(this._pendingRemote && this.state.expandedIndex==null && !this.state.gfx){
+      const d=this._pendingRemote; this._pendingRemote=null; this._applyRemote(d);
+    }
+  }
 
   // ---- Firebase cloud sync ----
   FB_CONFIG = {
@@ -492,34 +478,27 @@ class Component extends DCLogic {
   };
   FB_URLS = [
     "https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js",
-    "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js",
     "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"
   ];
   componentDidMount(){ this._initCloud(); }
-  _wireAuth(){
-    if(!window.PBCloud) return;
-    window.PBCloud.onAuth(user=>{
-      if(user) this._cloudLogin(user);
-      else this.setState(p=>({ cloud:{ ...p.cloud, ready:true, user:null } }));
-    });
-  }
+  _startCloud(){ if(window.PBCloud) this._cloudStart(); }
   _initCloud(){
-    if(window.PBCloud){ this._wireAuth(); return; }
+    if(window.PBCloud){ this._startCloud(); return; }
     const urls=this.FB_URLS.slice(); let i=0;
     const init=()=>{
       if(!window.firebase){ console.warn("Firebase failed to load"); return; }
       try{
         if(!window.firebase.apps || !window.firebase.apps.length) window.firebase.initializeApp(this.FB_CONFIG);
-        const auth=window.firebase.auth(), db=window.firebase.firestore();
-        const provider=new window.firebase.auth.GoogleAuthProvider();
+        const db=window.firebase.firestore();
         window.PBCloud={
-          onAuth:(cb)=>auth.onAuthStateChanged(cb),
-          signIn:()=>auth.signInWithPopup(provider),
-          signOut:()=>auth.signOut(),
-          load:(uid)=>db.collection("builders").doc(uid).get().then(s=>s.exists?s.data():null),
-          save:(uid,data)=>db.collection("builders").doc(uid).set(data),
+          load:(id)=>db.collection("builders").doc(id).get().then(s=>s.exists?s.data():null),
+          save:(id,data)=>db.collection("builders").doc(id).set(data),
+          subscribe:(id,cb)=>db.collection("builders").doc(id).onSnapshot(
+            s=>{ if(s.exists) cb(s.data(), s.metadata); },
+            e=>console.warn("cloud subscribe failed", e)
+          ),
         };
-        this._wireAuth();
+        this._startCloud();
       }catch(e){ console.warn("Firebase init error", e); }
     };
     const next=()=>{
@@ -531,28 +510,55 @@ class Component extends DCLogic {
     };
     next();
   }
-  async _cloudLogin(user){
-    this.setState(p=>({ cloud:{ ...p.cloud, ready:true, user } }));
+  async _cloudStart(){
+    this.setState(p=>({ cloud:{ ...p.cloud, ready:true } }));
     try{
-      const remote = await window.PBCloud.load(user.uid);
+      const remote = await window.PBCloud.load(this.SHARED_ID);
       if(remote && Array.isArray(remote.posts) && remote.posts.length){
-        this.setState(Object.assign({}, remote), ()=> this.setState({ selectedMonths:[this.CURRENT] }));
+        this._applyRemote(remote, true);   // adopt the team's latest
       } else {
-        this._cloudSave(true); // first login → seed cloud from current data
+        this._cloudSave(true); // first ever run → seed the shared workspace
       }
     }catch(e){ console.warn("cloud load failed", e); }
+    this._subscribeShared();
+  }
+  _subscribeShared(){
+    if(this._unsub || !window.PBCloud || !window.PBCloud.subscribe) return;
+    this._unsub = window.PBCloud.subscribe(this.SHARED_ID, (data, meta)=>{
+      if(!data) return;
+      if(meta && meta.hasPendingWrites) return;              // our own not-yet-committed write
+      if(data.rev && data.rev === this._lastLocalRev) return; // echo of our own last save
+      // Don't yank the ground out while someone is mid-edit — apply once they finish.
+      if(this.state.expandedIndex!=null || this.state.gfx){ this._pendingRemote = data; return; }
+      this._applyRemote(data);
+    });
+  }
+  _applyRemote(data, initial){
+    if(!data || !Array.isArray(data.posts)) return;
+    this._suppressSave = true;   // applying a teammate's update must not bounce back as a new write
+    const patch = { posts:data.posts };
+    if(data.photo!=null) patch.photo = data.photo;
+    if(data.photoColor!=null) patch.photoColor = data.photoColor;
+    if(data.bradTitle!=null) patch.bradTitle = data.bradTitle;
+    if(data.rev) this._lastLocalRev = data.rev;
+    this.setState(patch, ()=>{
+      this._suppressSave = false;
+      if(initial) this.setState({ selectedMonths:[this.CURRENT] });
+    });
   }
   _cloudSave(now){
-    const u = this.state.cloud && this.state.cloud.user;
-    if(!u || !window.PBCloud) return;
+    if(this._suppressSave) return;
+    if(!window.PBCloud) return;
     clearTimeout(this._cloudT);
     const go=()=>{ const {posts,photo,photoColor,bradTitle}=this.state;
-      window.PBCloud.save(u.uid, {posts,photo,photoColor,bradTitle}).catch(e=>console.warn("cloud save failed", e)); };
+      if(!this._clientId) this._clientId=Math.random().toString(36).slice(2,8);
+      const rev = Date.now()+"-"+this._clientId;
+      this._lastLocalRev = rev;
+      window.PBCloud.save(this.SHARED_ID, {posts,photo,photoColor,bradTitle, rev})
+        .catch(e=>console.warn("cloud save failed", e)); };
     if(now) go(); else this._cloudT=setTimeout(go, 800);
   }
-  _signIn(){ if(window.PBCloud) window.PBCloud.signIn().catch(e=>{ console.warn(e); this.setState(p=>({cloud:{...p.cloud, err:(e&&e.code)||"sign-in failed"}})); }); }
-  _signOut(){ if(window.PBCloud) window.PBCloud.signOut(); }
-  _skipAuth(){ this.setState(p=>({ cloud:{ ...p.cloud, skip:true } })); }
+  componentWillUnmount(){ if(this._unsub){ try{ this._unsub(); }catch(e){} this._unsub=null; } }
 
   MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   MSHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -733,10 +739,41 @@ class Component extends DCLogic {
   }
   aspectOf(size){ return size==="banner" ? "1.91/1" : size==="tall" ? "3/4" : "1/1"; }
   deriveText(body){
-    let s=(body||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}]/gu,"").replace(/\s+/g," ").trim();
-    const m=s.match(/^[^.!?]*[.!?]/); if(m) s=m[0];
-    if(s.length>96) s=s.slice(0,93).trim()+"…";
-    return s.replace(/\*/g,"").trim();
+    const strip = (t)=> (t||"")
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}]/gu,"")
+      .replace(/\*/g,"")
+      .replace(/\s+/g," ")
+      .trim();
+    const raw = (body||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}]/gu,"");
+    // Break the whole post into candidate sentences (across paragraphs).
+    const sentences=[];
+    raw.split(/\n+/).forEach(line=>{
+      (line.match(/[^.!?]+[.!?]*/g) || []).forEach(c=>{ const t=strip(c); if(t) sentences.push(t); });
+    });
+    if(!sentences.length){ const s=strip(raw); return s.length>110 ? s.slice(0,107).trim()+"\u2026" : s; }
+    // Score each line for how "poignant"/quotable it is.
+    const score=(sent, idx)=>{
+      const len=sent.length, words=sent.split(/\s+/).length;
+      let sc=0;
+      if(len>=28 && len<=95) sc+=6; else if(len>=18 && len<=120) sc+=3;
+      if(len<16) sc-=5;                                   // fragment
+      if(len>150) sc-=6;                                  // too long to sit on a card
+      if(words>=5 && words<=18) sc+=3;
+      if(/\d/.test(sent)) sc+=3;                          // a number / stat
+      if(/[%$]/.test(sent)) sc+=3;                        // percent or dollar figure
+      if(/\b(not|isn'?t|don'?t|doesn'?t|won'?t|never|no|nothing)\b/i.test(sent)) sc+=3; // contrast/negation
+      if(/\b(but|because|which is why|so that|instead)\b/i.test(sent)) sc+=2;
+      if(/\b(you|your|we|we'?re|our|us)\b/i.test(sent)) sc+=2;   // direct address
+      if(/\b(most|only|every|always|best|worst|real|whole|entire|the reason)\b/i.test(sent)) sc+=2;
+      if(/^(i think|maybe|honestly|so |and |but )/i.test(sent)) sc-=2;  // weak opener
+      if(idx===0) sc+=1;                                  // gentle tie-break toward the hook
+      return sc;
+    };
+    let best=sentences[0], bestScore=-Infinity;
+    sentences.forEach((sent,i)=>{ const sc=score(sent,i); if(sc>bestScore){ bestScore=sc; best=sent; } });
+    let s=strip(best);
+    if(s.length>110) s=s.slice(0,107).trim()+"\u2026";
+    return s;
   }
   gfxDefault(post){
     return { template:"statement", variant:"navy", text:this.deriveText(post&&post.body), eyebrow:"CONNETIC INSIGHTS", image:this.LIB[0].src, size:"square", autoText:true };
@@ -1368,11 +1405,7 @@ class Component extends DCLogic {
 
     return {
       isGallery:true,
-      cloudReady:s.cloud.ready, cloudUser:!!s.cloud.user,
-      showGate: s.cloud.ready && !s.cloud.user && !s.cloud.skip,
-      cloudEmail: s.cloud.user ? (s.cloud.user.email||"") : "",
-      cloudErr: s.cloud.err||"",
-      signIn:()=>this._signIn(), signOutCloud:()=>this._signOut(), skipAuth:()=>this._skipAuth(),
+      cloudReady:s.cloud.ready,
       bradName:this.BRAD_NAME, bradTitle:s.bradTitle,
       photo:s.photo, photoColor:s.photoColor,
       photoBg: s.photo ? `url("${s.photo}")` : "none",
