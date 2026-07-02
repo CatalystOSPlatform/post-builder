@@ -16,7 +16,7 @@
   html, body { margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   textarea, input, select, button { font-family: inherit; }
-  .pmc-input:focus, .pmc-textarea:focus { outline: none; border-color: #4F46E5 !important; box-shadow: 0 0 0 3px rgba(79,70,229,0.14) !important; }
+  .pmc-input:focus, .pmc-textarea:focus { outline: none; border-color: #C2A24A !important; box-shadow: 0 0 0 3px rgba(194,162,74,0.20) !important; }
   .pmc-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
   .pmc-scroll::-webkit-scrollbar-thumb { background: #d7d7d4; border-radius: 5px; }
   .pmc-act:hover { background: #f3f2ef !important; }
@@ -25,10 +25,10 @@
   .pmc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.13) !important; }
   .pmc-card:hover .pmc-editpill { opacity: 1 !important; }
   .pmc-card:hover .pmc-del { opacity: 1 !important; }
-  .pmc-mchip:hover { border-color:#b9b7f0 !important; }
+  .pmc-mchip:hover { border-color:#dcc98f !important; }
   .pmc-back:hover { background:#f0efec !important; }
   .pmc-del:hover { background:#fdecec !important; border-color:#f3b4b4 !important; }
-  .pmc-add:hover { border-color:#4F46E5 !important; color:#4F46E5 !important; background:#f6f6fb !important; }
+  .pmc-add:hover { border-color:#C2A24A !important; color:#a0843a !important; background:#f7f2e6 !important; }
   .pmc-step:hover { background:#f0efec !important; }
   .pmc-avup:hover .pmc-avoverlay { opacity:1 !important; }
   .pmc-graphic:hover .pmc-gov { opacity:1 !important; }
@@ -62,6 +62,9 @@
   <!-- ===================== GALLERY VIEW ===================== -->
   <sc-if value="{{ isGallery }}" hint-placeholder-val="{{ true }}">
   <div style="height:100%; display:flex; flex-direction:column;">
+
+    <!-- BrandBar — controlled centrally via brand-bar-config.js -->
+    <dc-import name="BrandBar" hint-size="100%,40px" style="flex:none;"></dc-import>
 
     <header style="padding:12px clamp(14px,3vw,30px); background:#fff; border-bottom:1px solid #e3e2df; display:flex; align-items:center; justify-content:space-between; gap:14px; flex:none; flex-wrap:wrap;">
       <div style="position:relative;">
@@ -104,6 +107,10 @@
       </div>
 
       <div style="display:flex; align-items:center; gap:10px;">
+        <button class="pmc-tool" onClick="{{ openBrand }}" style="display:flex; align-items:center; gap:8px; background:#0e2236; border:1px solid #0e2236; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff; box-shadow:0 2px 8px rgba(14,34,54,.28);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8CC63F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          Brand templates
+        </button>
         <div style="position:relative;">
           <button class="pmc-tool" onClick="{{ toggleDl }}" style="display:flex; align-items:center; gap:8px; background:#F2E9D5; border:1px solid #E2D4B4; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; color:#4a4332; box-shadow:0 2px 8px rgba(120,100,60,.30);">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4a4332" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -304,7 +311,7 @@
             </div>
             <div>
               <div style="font-size:15px; font-weight:800; color:#1d2226;">Brand templates</div>
-              <div style="font-size:12px; color:#9a9a95;">Connetic founder library · pick one to edit for this post</div>
+              <div style="font-size:12px; color:#9a9a95;">{{ brandSubtitle }}</div>
             </div>
           </div>
           <button onClick="{{ closeBrand2 }}" class="pmc-back" style="width:32px; height:32px; border-radius:8px; border:1px solid #e0dfdb; background:#faf9f7; cursor:pointer; font-size:18px; color:#6a6a66; display:flex; align-items:center; justify-content:center;">×</button>
@@ -411,7 +418,7 @@
         <div style="padding:24px 26px;">
           <sc-if value="{{ modalSending }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex; flex-direction:column; align-items:center; gap:16px; padding:14px 0;">
-              <div style="width:42px; height:42px; border-radius:50%; border:3px solid #ece9f5; border-top-color:{{ modalAccent }}; animation:pmcspin .8s linear infinite;"></div>
+              <div style="width:42px; height:42px; border-radius:50%; border:3px solid #efe9da; border-top-color:{{ modalAccent }}; animation:pmcspin .8s linear infinite;"></div>
               <div style="font-size:14px; font-weight:600; color:#3b3b38;">{{ modalSendingText }}</div>
               <div style="font-size:12.5px; color:#9a9a95; text-align:center;">{{ modalSendingSub }}</div>
             </div>
@@ -437,7 +444,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#4F46E5&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;,&quot;options&quot;:[&quot;#4F46E5&quot;,&quot;#0A66C2&quot;,&quot;#1e4a85&quot;,&quot;#22867c&quot;,&quot;#b4332b&quot;]},&quot;showEngagement&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;monthlyTarget&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12,&quot;min&quot;:1,&quot;max&quot;:30,&quot;unit&quot;:&quot; posts&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Workflow&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;current&quot;,&quot;options&quot;:[&quot;current&quot;,&quot;all&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workflow&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C2A24A&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;,&quot;options&quot;:[&quot;#C2A24A&quot;,&quot;#1e4a85&quot;,&quot;#22867c&quot;,&quot;#2e9e62&quot;,&quot;#b4332b&quot;]},&quot;showEngagement&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;monthlyTarget&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12,&quot;min&quot;:1,&quot;max&quot;:30,&quot;unit&quot;:&quot; posts&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Workflow&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;current&quot;,&quot;options&quot;:[&quot;current&quot;,&quot;all&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workflow&quot;}}">
 class Component extends DCLogic {
   constructor(props){
     super(props);
@@ -449,6 +456,8 @@ class Component extends DCLogic {
       photo: "assets/brad.jpg",
       photoColor: "#1e4a85",
       bradTitle: this.BRAD_TITLE,
+      team: null,
+      teamOpen: false,
       posts: this.makeDefaults(),
       modal: null, // {stage:'sending'|'done', count}
       gfx: null,   // {postIdx, draft, existing}
@@ -468,8 +477,8 @@ class Component extends DCLogic {
 
   SAVE_KEY = "conneticPostBuilder.v7";
   _loadSaved(){ try{ const r=localStorage.getItem(this.SAVE_KEY); if(r){ const d=JSON.parse(r); if(d&&Array.isArray(d.posts)&&d.posts.length) return d; } }catch(e){} return null; }
-  _persist(){ try{ const {posts,photo,photoColor,bradTitle,selectedMonths}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradTitle,selectedMonths})); }catch(e){} this._cloudSave(); }
-  componentDidUpdate(pp, ps){ if(!ps) return; if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradTitle!==this.state.bradTitle || ps.selectedMonths!==this.state.selectedMonths) this._persist(); }
+  _persist(){ try{ const {posts,photo,photoColor,bradTitle,selectedMonths,team}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradTitle,selectedMonths,team})); }catch(e){} this._cloudSave(); }
+  componentDidUpdate(pp, ps){ if(!ps) return; if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradTitle!==this.state.bradTitle || ps.selectedMonths!==this.state.selectedMonths || ps.team!==this.state.team) this._persist(); }
 
   // ---- Firebase cloud sync ----
   FB_CONFIG = {
@@ -698,7 +707,7 @@ class Component extends DCLogic {
     };
     return m[kind];
   }
-  trackStyle(on){ return `width:38px; height:22px; border-radius:999px; flex:none; position:relative; transition:.18s; background:${on?'#4F46E5':'#cfcdc8'};`; }
+  trackStyle(on){ return `width:38px; height:22px; border-radius:999px; flex:none; position:relative; transition:.18s; background:${on?'#C2A24A':'#cfcdc8'};`; }
   knobStyle(on){ return `position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.18s; transform:translateX(${on?'16px':'0'}); box-shadow:0 1px 2px rgba(0,0,0,.2);`; }
 
   /* ---------- mutations ---------- */
@@ -756,7 +765,29 @@ class Component extends DCLogic {
   // ---- brand templates browser ----
   openBrand = ()=> this.setState({ brandOpen:true });
   closeBrand2 = ()=> this.setState({ brandOpen:false });
-  brandPick = (e)=>{ const el=e.target.closest && e.target.closest("[data-tpl]"); if(el){ this.setDraft({template:el.getAttribute("data-tpl")}); this.setState({brandOpen:false}); } };
+  _galleryTargetIdx(){
+    const s=this.state;
+    if(s.expandedIndex!=null && s.posts[s.expandedIndex]) return s.expandedIndex;
+    const mi = (s.selectedMonths && s.selectedMonths.length) ? s.selectedMonths[0] : this.CURRENT;
+    const list=this.monthPostIndices(mi);
+    if(list.length) return list[0];
+    return s.editIndex;
+  }
+  openGfxWithTemplate(tpl){
+    const idx=this._galleryTargetIdx();
+    const p=this.state.posts[idx]; if(!p) return;
+    const base = p.graphic ? {...this.gfxDefault(p), ...p.graphic} : this.gfxDefault(p);
+    const draft={...base, template:tpl};
+    this.setState({ editIndex:idx, gfx:{ postIdx:idx, draft, existing:!!p.graphic } });
+  }
+  brandPick = (e)=>{
+    const el=e.target.closest && e.target.closest("[data-tpl]");
+    if(!el) return;
+    const tpl=el.getAttribute("data-tpl");
+    if(this.state.gfx){ this.setDraft({template:tpl}); }
+    else { this.openGfxWithTemplate(tpl); }
+    this.setState({brandOpen:false});
+  };
   brandGridHtml(draft){
     return this.GFX_TPL.map(([id,label])=>{
       const on=draft&&draft.template===id;
@@ -823,7 +854,7 @@ class Component extends DCLogic {
     const text=c.text||"";
     const D="font-family:'Roboto',sans-serif;";
     const tex=this.texFor(t);
-    const logoW=(pos)=>`<img src="assets/logo-white.png" style="position:absolute;${pos}height:2.6cqw;width:auto;opacity:.95;"/>`;
+    const logoW=(pos)=>``;
     const avatar=(sz)=>`<div style="width:${sz}cqw;height:${sz}cqw;border-radius:50%;overflow:hidden;border:0.34cqw solid #8CC63F;box-shadow:0 0 0 0.12cqw rgba(255,255,255,.3);background:#13314f;flex:none;"><img src="${photo}" style="width:100%;height:100%;object-fit:cover;object-position:center 18%"/></div>`;
     const root=(inner)=>`<div style="position:absolute;inset:0;overflow:hidden;container-type:size;background:${grad};font-family:'Poppins',sans-serif;">${tex}${inner}</div>`;
 
@@ -986,6 +1017,12 @@ class Component extends DCLogic {
   toggleBrad = ()=> this.setState(s=>({ bradOpen:!s.bradOpen }));
   closeBrad = ()=> this.setState({ bradOpen:false });
   setBradTitle = (e)=> this.setState({ bradTitle: e.target.value });
+
+  // ---- "Powered by" team selector ----
+  TEAMS = ["Connetic Ventures", "Havener Capital Group", "VCAFX Fund", "Advisorpedia"];
+  toggleTeam = ()=> this.setState(s=>({ teamOpen:!s.teamOpen, bradOpen:false }));
+  closeTeam = ()=> this.setState({ teamOpen:false });
+  pickTeam = (name)=> this.setState({ team:name, teamOpen:false });
 
   // ---- content tools ----
   cleanLinkedIn(t){
@@ -1236,7 +1273,7 @@ class Component extends DCLogic {
 
   renderVals(){
     const s=this.state;
-    const ACCENT = this.props.accentColor || "#4F46E5";
+    const ACCENT = this.props.accentColor || "#C2A24A";
     const TARGET = this.props.monthlyTarget || 12;
     const SHOW_ENGAGEMENT = this.props.showEngagement !== false;
     const counts={}; s.posts.forEach(p=>{ counts[p.monthIndex]=(counts[p.monthIndex]||0)+1; });
@@ -1246,8 +1283,8 @@ class Component extends DCLogic {
       return {
         label:this.MSHORT[idx], full, count:n, hasPosts:n>0,
         onToggle:()=> this.setState({selectedMonths:[idx]}),
-        style:`display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.12s; border:1px solid ${sel?ACCENT:'#e0dfdb'}; background:${sel?ACCENT:'#fff'}; color:${sel?'#fff':'#3b3b38'};`,
-        badgeStyle:`min-width:18px; height:18px; padding:0 5px; border-radius:999px; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; background:${sel?'rgba(255,255,255,0.25)':'#eceaff'}; color:${sel?'#fff':ACCENT};`,
+        style:`display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.12s; border:1px solid ${sel?'#d8c389':'#e0dfdb'}; background:${sel?'#F2E9D5':'#fff'}; color:${sel?'#4a4332':'#3b3b38'};`,
+        badgeStyle:`min-width:18px; height:18px; padding:0 5px; border-radius:999px; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; background:${sel?'rgba(74,67,50,0.14)':'#f3ecda'}; color:${sel?'#6b6045':ACCENT};`,
       };
     });
 
@@ -1341,6 +1378,16 @@ class Component extends DCLogic {
       photoBg: s.photo ? `url("${s.photo}")` : "none",
       hasPhoto:!!s.photo, noPhoto:!s.photo,
       bradOpen:s.bradOpen, toggleBrad:this.toggleBrad, closeBrad:this.closeBrad, setBradTitle:this.setBradTitle,
+      teamOpen:s.teamOpen, toggleTeam:this.toggleTeam, closeTeam:this.closeTeam,
+      teamLabel: s.team || "Select a team",
+      teamSelected: !!s.team,
+      teamColor: s.team ? "#1d2226" : "#8a7c54",
+      teamList: this.TEAMS.map(name=>{
+        const on = s.team===name;
+        return { name, onPick:()=>this.pickTeam(name),
+          style:`width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; background:${on?'#F2E9D5':'#fff'}; border:none; cursor:pointer; text-align:left; font-size:13px; font-weight:${on?'700':'500'}; color:#1d2226;`,
+          check: on };
+      }),
       onAvatarFile:this.onAvatarFile, removeAvatar:()=>this.setState({photo:null}),
       genBusy:s.genBusy, genLabel: s.genBusy? "Generating…" : "Generate from Claude",
       generateText:this.generateText, cleanText:this.cleanText, onBodyPaste:this.onBodyPaste, pasteClean:this.pasteClean, cancelGen:this.cancelGen, cancelWriting:this.cancelWriting, saveText:this.saveText, saveTextLabel: s.textSaved? "Saved" : "Save text", footerOpts,
@@ -1419,6 +1466,7 @@ class Component extends DCLogic {
       dlOpen:s.dlOpen, toggleDl:this.toggleDl, closeDl:this.closeDl, pickPDF:this.pickPDF, pickWord:this.pickWord,
       closeGfx:this.closeGfx, applyGfx:this.applyGfx, removeGfx:this.removeGfx,
       brandOpen:s.brandOpen, openBrand:this.openBrand, closeBrand2:this.closeBrand2, brandPick:this.brandPick,
+      brandSubtitle: gx ? "Connetic founder library · pick one to edit for this post" : "Connetic founder library · pick one to start editing",
       brandGridHtml:{__html:this.brandGridHtml(draft)},
 
       // modal
