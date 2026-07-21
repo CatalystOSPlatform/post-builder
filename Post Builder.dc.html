@@ -1046,9 +1046,10 @@ class Component extends DCLogic {
     cands.forEach(t=>{ const w=t.split(/\s+/).length; if(w>bestW || (w===bestW && Math.random()<0.5)){ best=t; bestW=w; } });
     return best;
   }
-  randomGraphicFor(body){
+  randomGraphicFor(body, idx){
     const TEXT_TPL=["statement","megastatement","headline","spotlight","bigcenter","twopart","arrowpoint","socialcard"];
-    const tpl=TEXT_TPL[Math.floor(Math.random()*TEXT_TPL.length)];
+    if(this._tplSeed==null) this._tplSeed=Math.floor(Math.random()*TEXT_TPL.length);
+    const tpl = (idx==null) ? TEXT_TPL[Math.floor(Math.random()*TEXT_TPL.length)] : TEXT_TPL[((idx|0)+this._tplSeed)%TEXT_TPL.length];
     return { template:tpl, variant:(this.TPL_VAR[tpl]||"navy"), text:this.pickPoignant(body), eyebrow:"CULTURE FOUNDRY INSIGHTS", image:this.LIB[0].src, size:"square", autoText:false };
   }
   _applyInbox(items){
@@ -1068,17 +1069,18 @@ class Component extends DCLogic {
         const body=(it.body!=null ? it.body : "").toString();
         let positions=[];
         posts.forEach((p,idx)=>{ if(p.monthIndex===mi) positions.push(idx); });
-        while(positions.length < num){ const fp=this.blankPost(mi); fp.graphic=this.randomGraphicFor(""); posts.push(fp); positions.push(posts.length-1); dirty=true; }
+        while(positions.length < num){ const fp=this.blankPost(mi); fp.graphic=this.randomGraphicFor("", positions.length); posts.push(fp); positions.push(posts.length-1); dirty=true; }
         const targetIdx=positions[num-1];
         const tp=posts[targetIdx];
         if(tp.importRev===rev) return;           // this exact version already applied (respects later manual edits)
-        const gfx = tp.graphic ? tp.graphic : this.randomGraphicFor(body);
+        const gfx = tp.graphic ? tp.graphic : this.randomGraphicFor(body, num-1);
         posts[targetIdx]={...tp, body, hasMedia:true, mediaOff:false, graphic:gfx, importKey:year+"-"+month+"-"+num, importRev:rev};
         dirty=true;
       });
       // safety: any post in an affected month still lacking a graphic gets one
       const affected=new Set(sorted.map(it=>Number(it.month)-1));
-      posts=posts.map(p=> (affected.has(p.monthIndex) && !p.graphic) ? {...p, hasMedia:true, mediaOff:false, graphic:this.randomGraphicFor(p.body||"")} : p);
+      const scnt={};
+      posts=posts.map(p=> (affected.has(p.monthIndex) && !p.graphic) ? {...p, hasMedia:true, mediaOff:false, graphic:this.randomGraphicFor(p.body||"", (scnt[p.monthIndex]=(scnt[p.monthIndex]||0)+1)-1)} : p);
       return dirty ? { posts } : {};
     });
   }
