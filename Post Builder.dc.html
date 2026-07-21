@@ -535,10 +535,17 @@
 
             <sc-if value="{{ draftUsesImage }}" hint-placeholder-val="{{ false }}">
               <div>
-                <div style="display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 10px;">
-                  <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase;">Image gallery</div>
-                  <span style="font-size:11px; color:#bdbdb8;">founders &amp; company</span>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin:22px 0 6px;">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase;">Brand photo gallery</div>
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <label style="font-size:11.5px; font-weight:700; color:#1e4a85; cursor:pointer;">
+                      + Upload your own
+                      <input type="file" accept="image/png,image/jpeg,image/webp" multiple onChange="{{ uploadBrandPhotos }}" style="display:none;" />
+                    </label>
+                    <button onClick="{{ deleteAllBrandPhotos }}" style="background:none; border:none; padding:0; cursor:pointer; font-size:11.5px; font-weight:700; color:#c0392b;">Delete all</button>
+                  </div>
                 </div>
+                <div style="font-size:11px; color:#b6b5b0; line-height:1.4; margin-bottom:9px;">Any size accepted — PNGs recommended, no larger than 2400px across. Hover a photo and click × to remove it.</div>
                 <div class="pmc-scroll" onClick="{{ pickImageDelegate }}" style="max-height:248px; overflow-y:auto; padding-right:4px;" dangerouslySetInnerHTML="{{ galleryHtml }}"></div>
               </div>
             </sc-if>
@@ -832,6 +839,7 @@ class Component extends DCLogic {
       teamOpen: false,
       posts: [],
       modal: null, // {stage:'sending'|'done', count}
+      brandPhotos: null, // set from saved/default in constructor
       pub: null, // publish-to-hubspot workflow state
       pubDest: { hubspot:true },
       pubPortal: "Culture Foundry",
@@ -856,6 +864,16 @@ class Component extends DCLogic {
     }
     // Default view is always a single-month gallery of the current month
     this.state.selectedMonths=[this.CURRENT];
+    if(!Array.isArray(this.state.brandPhotos)) this.state.brandPhotos=this.BRAND_PHOTOS_DEFAULT.slice();
+    // heal any old .png brand/founder paths to their compressed .jpg, drop dupes
+    this.state.brandPhotos=[...new Set(this.state.brandPhotos.map(p=>this.fixImg(p)))];
+    // one-time merge of newly-shipped default brand photos (won't resurrect user-deleted ones on later runs)
+    if((this.state.brandSeed||0) < this.BRAND_SEED){
+      const have=new Set(this.state.brandPhotos);
+      const add=this.BRAND_PHOTOS_DEFAULT.filter(p=>!have.has(p));
+      this.state.brandPhotos=[...this.state.brandPhotos, ...add];
+      this.state.brandSeed=this.BRAND_SEED;
+    }
     // Force Bill's title to the current default, overriding any stale saved/cloud value
     this.state.bradTitle=this.BRAD_TITLE;
     if(Array.isArray(this.state.founders)) this.state.founders=this.state.founders.map((f,i)=> i===0 ? {...f, title:this.BRAD_TITLE} : f);
@@ -864,10 +882,10 @@ class Component extends DCLogic {
   SAVE_KEY = "conneticPostBuilder.v8";
   FIRM_ID = "havener";
   CLIENT_ID = "connetic";
-  fixImg(src){ if(!src) return src; const s=String(src); if(/^(data:|https?:)/.test(s)) return s; if(/founders_[a-z0-9]+\//i.test(s) && s.indexOf("assets/founders/")<0) return "assets/brad.jpg"; return s; }
+  fixImg(src){ if(!src) return src; let s=String(src); if(/^(data:|https?:)/.test(s)) return s; s=s.replace(/assets\/brand-photos\/photo_(\d+)\.png$/i,"assets/brand-photos/photo_$1.jpg"); s=s.replace(/assets\/founders\/photo_(01|17)\.png$/i,"assets/founders/photo_$1.jpg"); if(/founders_[a-z0-9]+\//i.test(s) && s.indexOf("assets/founders/")<0) return "assets/brad.jpg"; const m=s.match(/assets\/founders\/photo_(\d+)/i); if(m && ["01","17"].indexOf(m[1])<0) return "assets/img/brad-futureproof.jpg"; return s; }
   fixPostImgs(posts){ if(!Array.isArray(posts)) return posts; return posts.map(p=>{ const np={...p}; if(np.image) np.image=this.fixImg(np.image); if(np.graphic&&np.graphic.image) np.graphic={...np.graphic, image:this.fixImg(np.graphic.image)}; return np; }); }
   _loadSaved(){ try{ const r=localStorage.getItem(this.SAVE_KEY); if(r){ const d=JSON.parse(r); if(d&&Array.isArray(d.posts)&&d.posts.length){ d.posts=this.fixPostImgs(d.posts); return d; } } }catch(e){} return null; }
-  _persist(){ try{ const {posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team,contentMode}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team,contentMode})); }catch(e){} this._cloudSave(); }
+  _persist(){ try{ const {posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team,contentMode,brandPhotos,brandSeed}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team,contentMode,brandPhotos,brandSeed})); }catch(e){} this._cloudSave(); }
   componentDidUpdate(pp, ps){
     if(!ps) return;
     if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradName!==this.state.bradName || ps.bradTitle!==this.state.bradTitle || ps.founders!==this.state.founders || ps.selectedMonths!==this.state.selectedMonths || ps.team!==this.state.team) this._persist();
@@ -1078,16 +1096,20 @@ class Component extends DCLogic {
   COMPANY_IMGS = [
     "assets/img/connetic-network.png","assets/img/connetic-tech.png","assets/img/wendal.jpg",
   ];
+  BRAND_SEED = 3;
+  BRAND_PHOTOS_DEFAULT = [
+    "assets/brand-photos/photo_01.jpg","assets/brand-photos/photo_02.jpg","assets/brand-photos/photo_03.jpg",
+    "assets/brand-photos/photo_04.jpg","assets/brand-photos/photo_05.jpg","assets/brand-photos/photo_06.jpg",
+    "assets/brand-photos/photo_07.jpg","assets/brand-photos/photo_08.jpg","assets/brand-photos/photo_09.jpg",
+    "assets/brand-photos/photo_10.jpg",
+    "assets/brand-photos/photo_11.jpg","assets/brand-photos/photo_12.jpg","assets/brand-photos/photo_13.jpg",
+    "assets/brand-photos/photo_14.jpg","assets/brand-photos/photo_15.jpg",
+    "assets/brad.jpg","assets/img/brad-futureproof.jpg","assets/img/brad-balcony.jpg",
+    "assets/img/connetic-network.png","assets/img/connetic-tech.png",
+  ];
   FOUNDER_IMGS = [
     "assets/brad.jpg","assets/img/brad-futureproof.jpg","assets/img/brad-balcony.jpg",
-    "assets/founders/photo_01.png","assets/founders/photo_02.png","assets/founders/photo_03.png",
-    "assets/founders/photo_04.png","assets/founders/photo_05.png","assets/founders/photo_06.png",
-    "assets/founders/photo_07.png","assets/founders/photo_08.png","assets/founders/photo_09.png",
-    "assets/founders/photo_10.png","assets/founders/photo_11.png","assets/founders/photo_12.png",
-    "assets/founders/photo_13.png","assets/founders/photo_14.png","assets/founders/photo_15.png",
-    "assets/founders/photo_16.png","assets/founders/photo_17.png","assets/founders/photo_18.png",
-    "assets/founders/photo_19.png","assets/founders/photo_20.jpg","assets/founders/photo_21.jpg",
-    "assets/founders/photo_22.png","assets/founders/photo_23.jpg","assets/founders/photo_24.png",
+    "assets/founders/photo_01.jpg","assets/founders/photo_17.jpg",
   ];
   LIB = [
     {id:"network", src:"assets/img/connetic-network.png", label:"Network"},
@@ -1636,12 +1658,27 @@ class Component extends DCLogic {
   }
   gfxGalleryHtml(draft){
     const sel=(draft&&draft.image)||"";
-    const thumb=(src)=>`<button data-src="${src}" style="position:relative;height:62px;border-radius:8px;cursor:pointer;overflow:hidden;border:2px solid ${sel===src?'#1e4a85':'#e6e5e1'};padding:0;background:#eceae6;"><img src="${src}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;"/></button>`;
+    const lib=this.state.brandPhotos||[];
+    const thumb=(src)=>`<div style="position:relative;height:62px;border-radius:8px;overflow:hidden;border:2px solid ${sel===src?'#1e4a85':'#e6e5e1'};background:#f2f1ee url('${src}') center/cover;"><button data-src="${src}" style="position:absolute;inset:0;width:100%;height:100%;border:none;background:transparent;cursor:pointer;padding:0;"></button><button data-del="${src}" title="Delete" style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;border:none;background:rgba(14,34,54,.72);color:#fff;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">\u00d7</button></div>`;
     const grid=(arr)=>`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">${arr.map(thumb).join("")}</div>`;
-    const head=(t)=>`<div style="font-size:11px;font-weight:700;letter-spacing:0.07em;color:#a0a09b;text-transform:uppercase;margin:4px 0 9px;">${t}</div>`;
-    return head("Founders")+grid(this.FOUNDER_IMGS)+head("Company")+grid(this.COMPANY_IMGS);
+    if(!lib.length) return `<div style="padding:22px 14px;text-align:center;color:#a0a09b;font-size:12.5px;background:#faf9f7;border:1px dashed #dcdbd7;border-radius:9px;">No brand photos yet. Use <b style="color:#6a6a66;">Upload your own</b> to add images.</div>`;
+    return grid(lib);
   }
   pickImageDelegate = (e)=>{
+    const del=e.target.closest && e.target.closest("[data-del]");
+    if(del){ e.stopPropagation(); this.deleteBrandPhoto(del.getAttribute("data-del")); return; }
+    const el=e.target.closest && e.target.closest("[data-src]");
+    if(el) this.setDraft({ image: el.getAttribute("data-src") });
+  };
+  deleteBrandPhoto = (src)=> this.setState(s=>({ brandPhotos:(s.brandPhotos||[]).filter(x=>x!==src) }), ()=>this._persist());
+  deleteAllBrandPhotos = ()=> this.setState({ brandPhotos:[] }, ()=>this._persist());
+  uploadBrandPhotos = (e)=>{
+    const files=[...(e.target.files||[])]; if(!files.length) return;
+    let pending=files.length; const added=[];
+    files.forEach(f=>{ const r=new FileReader(); r.onload=()=>{ added.push(r.result); if(--pending===0){ this.setState(s=>({ brandPhotos:[...added, ...(s.brandPhotos||[])] }), ()=>this._persist()); } }; r.readAsDataURL(f); });
+    e.target.value="";
+  };
+  pickImageDelegateOLD = (e)=>{
     const el=e.target.closest && e.target.closest("[data-src]");
     if(el) this.setDraft({ image: el.getAttribute("data-src") });
   };
@@ -2374,6 +2411,7 @@ class Component extends DCLogic {
       img3Style:thumbStyle(this.LIB[3].src, draft&&draft.image===this.LIB[3].src),
       galleryHtml: {__html:this.gfxGalleryHtml(draft)},
       pickImageDelegate: this.pickImageDelegate,
+      uploadBrandPhotos: this.uploadBrandPhotos, deleteAllBrandPhotos: this.deleteAllBrandPhotos,
       tplHtml:{__html:this.gfxTplHtml(draft)}, varHtml:{__html:this.gfxVarHtml(draft)}, sizeHtml:{__html:this.gfxSizeHtml(draft)},
       txtHtml:{__html:this.gfxTxtHtml(draft)}, bgHtml:{__html:this.gfxBgHtml(draft)},
       onTxtClick:this.onTxtClick, onBgClick:this.onBgClick,
