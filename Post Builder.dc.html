@@ -580,8 +580,8 @@ class Component extends DCLogic {
   }
 
   SAVE_KEY = "conneticPostBuilder.v7";
-  FIRM_ID = "havener";
-  CLIENT_ID = "connetic";
+  FIRM_ID = "catalystos";
+  CLIENT_ID = "culture-foundry"";
   _loadSaved(){ try{ const r=localStorage.getItem(this.SAVE_KEY); if(r){ const d=JSON.parse(r); if(d&&Array.isArray(d.posts)&&d.posts.length) return d; } }catch(e){} return null; }
   _persist(){ try{ const {posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team})); }catch(e){} this._cloudSave(); }
   componentDidUpdate(pp, ps){
