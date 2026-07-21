@@ -10,13 +10,15 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="catalystos-theme.css">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   textarea, input, select, button { font-family: inherit; }
-  .pmc-input:focus, .pmc-textarea:focus { outline: none; border-color: #C2A24A !important; box-shadow: 0 0 0 3px rgba(194,162,74,0.20) !important; }
+  .pmc-input:focus, .pmc-textarea:focus { outline: none; border-color: var(--cos-accent) !important; box-shadow: 0 0 0 3px var(--cos-accent-ring) !important; }
   .pmc-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
   .pmc-scroll::-webkit-scrollbar-thumb { background: #d7d7d4; border-radius: 5px; }
   .pmc-act:hover { background: #f3f2ef !important; }
@@ -28,16 +30,21 @@
   .pmc-mchip:hover { border-color:#dcc98f !important; }
   .pmc-back:hover { background:#f0efec !important; }
   .pmc-del:hover { background:#fdecec !important; border-color:#f3b4b4 !important; }
-  .pmc-add:hover { border-color:#C2A24A !important; color:#a0843a !important; background:#f7f2e6 !important; }
+  .pmc-add:hover { border-color:var(--cos-accent) !important; color:var(--cos-accent) !important; background:var(--cos-accent-tint) !important; }
   .pmc-step:hover { background:#f0efec !important; }
   .pmc-avup:hover .pmc-avoverlay { opacity:1 !important; }
   .pmc-graphic:hover .pmc-gov { opacity:1 !important; }
   .pmc-tool:hover { filter:brightness(0.97); }
+  .pmc-select:focus { outline:none; border-color:var(--cos-accent) !important; box-shadow:0 0 0 3px var(--cos-accent-ring) !important; }
+  .pmc-select:hover { border-color:#c3c2bd !important; }
+  .pmc-tl { width:12px; height:12px; border-radius:50%; box-shadow:inset 0 0 0 0.5px rgba(0,0,0,.18); }
   @keyframes pmcspin { to { transform: rotate(360deg); } }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </helmet>
 
-<div style="height:100vh; min-height:680px; background:#EEEDEA; color:#1d2226; overflow:hidden; display:flex; flex-direction:column; position:relative;">
+<div class="cos-base" style="height:100vh; min-height:680px; background:var(--cos-mist); color:var(--cos-navy); overflow:hidden; display:flex; flex-direction:column; position:relative;">
 
   <!-- (sign-in removed — open shared workspace: anyone with the URL edits the same data) -->
 
@@ -49,18 +56,38 @@
     <!-- BrandBar — controlled centrally via brand-bar-config.js -->
     <dc-import name="BrandBar" hint-size="100%,40px" style="flex:none;"></dc-import>
 
-    <header style="padding:12px clamp(14px,3vw,30px); background:#fff; border-bottom:1px solid #e3e2df; display:flex; align-items:center; justify-content:space-between; gap:14px; flex:none; flex-wrap:wrap;">
+    <!-- app title bar — brand navy -->
+    <div style="flex:none; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px clamp(14px,3vw,30px); background:var(--cos-navy-deep); position:relative; user-select:none; flex-wrap:wrap;">
+      <div style="font-family:var(--cos-font-display); font-size:clamp(18px,3.4vw,26px); font-weight:800; letter-spacing:-0.02em; color:#fff;">Post Builder: <span style="color:#FD7A2B;">Culture Foundry</span></div>
+      <button class="pmc-tool" onClick="{{ openBrand }}" style="flex:none; display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.28); padding:9px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Brand Templates
+      </button>
+    </div>
+
+    <header style="position:relative; z-index:60; padding:12px clamp(14px,3vw,30px); background:#ffffff; border-bottom:1px solid #e3e2df; display:flex; align-items:center; justify-content:space-between; gap:14px; flex:none; flex-wrap:wrap;">
       <div style="position:relative;">
-        <button class="pmc-tool" onClick="{{ toggleBrad }}" style="display:flex; align-items:center; gap:13px; background:transparent; border:none; cursor:pointer; padding:4px 6px 4px 4px; border-radius:10px; text-align:left;">
+        <button class="pmc-tool" onClick="{{ toggleBrad }}" style="display:flex; align-items:center; gap:13px; background:#fff; border:1px solid #e0e3ef; cursor:pointer; padding:7px 15px 7px 8px; border-radius:13px; text-align:left; box-shadow:0 1px 3px rgba(0,0,0,.07);">
           <div style="width:44px; height:44px; border-radius:50%; background-image:{{ photoBg }}; background-size:cover; background-position:center; flex:none;"></div>
           <div style="line-height:1.2;">
-            <div style="font-size:10.5px; font-weight:700; letter-spacing:0.1em; color:#b0b0ab; text-transform:uppercase;">Post Builder · Connetic</div>
-            <div style="display:flex; align-items:center; gap:6px;"><span style="font-size:17px; font-weight:800; letter-spacing:-0.01em; color:#1d2226;">Brad Zapp</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#b0b0ab" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></div>
-            <div style="font-size:12px; color:#8a8a86; margin-top:1px;">{{ bradTitle }}</div>
+            <div style="font-size:10.5px; font-weight:700; letter-spacing:0.1em; color:#4a5170; text-transform:uppercase;">Founder</div>
+            <div style="display:flex; align-items:center; gap:6px;"><span style="font-size:17px; font-weight:800; letter-spacing:-0.01em; color:#1d2226;">{{ bradName }}</span></div>
+            <div style="font-size:12px; color:#3a4159; margin-top:1px;">{{ bradTitle }}</div>
           </div>
+          <div style="width:1px; align-self:stretch; background:#e6e8f0; margin:2px 0 2px 4px;"></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c8199" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <sc-if value="{{ bradOpen }}" hint-placeholder-val="{{ false }}">
           <div style="position:absolute; top:100%; left:0; margin-top:8px; width:312px; background:#fff; border:1px solid #e3e2df; border-radius:13px; box-shadow:0 14px 34px rgba(0,0,0,0.18); padding:18px; z-index:45;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin-bottom:8px;">Founder</div>
+            <div style="position:relative; margin-bottom:14px;">
+              <select onChange="{{ onFounderSelect }}" value="{{ founderSelectValue }}" class="pmc-select" style="appearance:none; -webkit-appearance:none; width:100%; background:#fff; border:1px solid #d0cfca; border-radius:8px; padding:9px 34px 9px 12px; font-size:13.5px; font-weight:600; color:#1d2226; cursor:pointer;">
+                <sc-for list="{{ founderOpts }}" as="f" hint-placeholder-count="1">
+                  <option value="{{ f.value }}">{{ f.text }}</option>
+                </sc-for>
+              </select>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8a8a86" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
             <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin-bottom:12px;">Edit founder</div>
             <div style="display:flex; align-items:center; gap:13px;">
               <label class="pmc-avup" style="position:relative; cursor:pointer; flex:none;">
@@ -69,13 +96,19 @@
                 <input type="file" accept="image/*" onChange="{{ onAvatarFile }}" style="display:none;" />
               </label>
               <div style="flex:1; min-width:0;">
-                <div style="font-size:14.5px; font-weight:700; color:#1d2226;">Brad Zapp</div>
+                <div style="font-size:14.5px; font-weight:700; color:#1d2226;">{{ bradName }}</div>
                 <button class="pmc-back" onClick="{{ removeAvatar }}" style="margin-top:6px; background:#faf9f7; border:1px solid #e0dfdb; padding:5px 11px; border-radius:7px; cursor:pointer; font-size:12px; font-weight:600; color:#b4332b;">Remove photo</button>
               </div>
             </div>
+            <label style="font-size:12.5px; font-weight:600; color:#5e5e5a; display:block; margin:14px 0 7px;">Name</label>
+            <input class="pmc-input" value="{{ bradName }}" onInput="{{ setBradName }}" style="width:100%; padding:10px 12px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; color:#1d2226;" />
             <label style="font-size:12.5px; font-weight:600; color:#5e5e5a; display:block; margin:14px 0 7px;">Title (applies to every post)</label>
             <textarea class="pmc-input" value="{{ bradTitle }}" onInput="{{ setBradTitle }}" rows="2" style="width:100%; padding:10px 12px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.4; color:#1d2226; resize:vertical;"></textarea>
-            <button onClick="{{ closeBrad }}" style="width:100%; margin-top:12px; background:#1e4a85; border:1px solid #1e4a85; padding:10px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">Done</button>
+            <button onClick="{{ addFounder }}" style="width:100%; margin-top:12px; display:flex; align-items:center; justify-content:center; gap:7px; background:#fff; border:1px dashed var(--cos-accent); padding:9px; border-radius:9px; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--cos-accent);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              Add another founder
+            </button>
+            <button onClick="{{ closeBrad }}" style="width:100%; margin-top:9px; background:var(--cos-grad-violet); border:none; padding:10px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">Done</button>
             <div style="margin-top:13px; padding-top:13px; border-top:1px solid #ececea;">
               <div style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#b0b0ab;">Team workspace · live</div>
               <div style="font-size:12px; color:#5e5e5a;">Every change saves automatically for the whole team.</div>
@@ -84,16 +117,12 @@
         </sc-if>
       </div>
 
-      <div style="display:flex; align-items:center; gap:10px;">
-        <button class="pmc-tool" onClick="{{ openBrand }}" style="display:flex; align-items:center; gap:8px; background:#0e2236; border:1px solid #0e2236; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff; box-shadow:0 2px 8px rgba(14,34,54,.28);">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8CC63F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          Brand templates
-        </button>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <div style="position:relative;">
-          <button class="pmc-tool" onClick="{{ toggleDl }}" style="display:flex; align-items:center; gap:8px; background:#F2E9D5; border:1px solid #E2D4B4; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; color:#4a4332; box-shadow:0 2px 8px rgba(120,100,60,.30);">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4a4332" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+          <button class="pmc-tool" onClick="{{ toggleDl }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #d8d7d3; padding:7px 12px; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; color:#3b3b38; box-shadow:0 1px 1.5px rgba(0,0,0,.04);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5e5e5a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
             Download
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a99b76" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a3a29d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <sc-if value="{{ dlOpen }}" hint-placeholder-val="{{ false }}">
             <div style="position:absolute; top:100%; right:0; margin-top:6px; width:208px; background:#fff; border:1px solid #e3e2df; border-radius:11px; box-shadow:0 12px 30px rgba(0,0,0,0.16); overflow:hidden; z-index:40;">
@@ -112,16 +141,28 @@
                   <div style="font-size:11px; color:#9a9a95;">Editable .doc copy</div>
                 </div>
               </button>
+              <div style="height:1px; background:#f0efec;"></div>
+              <button class="pmc-act" onClick="{{ pickPNG }}" style="width:100%; display:flex; align-items:center; gap:11px; padding:12px 15px; background:#fff; border:none; cursor:pointer; text-align:left;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
+                <div>
+                  <div style="font-size:13.5px; font-weight:600; color:#1d2226;">Graphics as PNG</div>
+                  <div style="font-size:11px; color:#9a9a95;">Only the graphics, at set size</div>
+                </div>
+              </button>
             </div>
           </sc-if>
         </div>
-        <button class="pmc-tool" onClick="{{ sendReview }}" style="display:flex; align-items:center; gap:7px; background:#F2E9D5; border:1px solid #E2D4B4; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; color:#4a4332; box-shadow:0 2px 8px rgba(120,100,60,.30);">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e4a85" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12s-3.5-7-10-7-10 7-10 7 3.5 7 10 7 10-7 10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        <button class="pmc-tool" onClick="{{ sendReview }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #d8d7d3; padding:7px 12px; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; color:#3b3b38; box-shadow:0 1px 1.5px rgba(0,0,0,.04);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5e5e5a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12s-3.5-7-10-7-10 7-10 7 3.5 7 10 7 10-7 10-7z"/><circle cx="12" cy="12" r="3"/></svg>
           Send to client for review
         </button>
-        <button class="pmc-tool" onClick="{{ sendHubspot }}" style="display:flex; align-items:center; gap:7px; background:#FF7A59; border:1px solid #FF7A59; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff; box-shadow:0 2px 8px rgba(255,122,89,.35);">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        <button class="pmc-tool" onClick="{{ sendHubspot }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #d8d7d3; padding:7px 12px; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; color:#3b3b38; box-shadow:0 1px 1.5px rgba(0,0,0,.04);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5e5e5a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           Send to HubSpot
+        </button>
+        <button class="pmc-tool" onClick="{{ saveNow }}" style="display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,#FDA71A 0%,#FD5920 100%); border:none; padding:8px 18px; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:700; color:#fff; box-shadow:0 2px 6px rgba(253,89,32,.28);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+          {{ saveBtnLabel }}
         </button>
       </div>
     </header>
@@ -133,45 +174,69 @@
       <div onClick="{{ closeBrad }}" style="position:absolute; inset:0; z-index:35;"></div>
     </sc-if>
 
-    <!-- month selector -->
-    <div style="padding:11px clamp(14px,3vw,24px); background:#fff; border-bottom:1px solid #ececea; flex:none; display:flex; align-items:center; gap:10px;">
-      <div style="display:flex; gap:7px; flex:none;">
-        <button class="pmc-back" onClick="{{ selectAll }}" style="background:#faf9f7; border:1px solid #e0dfdb; padding:8px 12px; border-radius:999px; cursor:pointer; font-size:12.5px; font-weight:700; color:#3b3b38;">All</button>
-        <button class="pmc-back" onClick="{{ selectCurrent }}" style="background:#faf9f7; border:1px solid #e0dfdb; padding:8px 12px; border-radius:999px; cursor:pointer; font-size:12.5px; font-weight:700; color:#3b3b38;">This month</button>
+    <!-- unified navigation section -->
+    <div style="padding:12px clamp(14px,3vw,24px); background:rgba(203,210,233,0.9); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid #cfd5e6; flex:none; display:flex; align-items:center; justify-content:center; gap:12px 14px; flex-wrap:wrap;">
+
+      <!-- cluster: what am I viewing -->
+      <div style="display:flex; align-items:center; gap:8px; flex:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a5170" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><rect x="3" y="4" width="18" height="17" rx="2.5"/><path d="M3 9h18"/><path d="M8 2v4"/><path d="M16 2v4"/></svg>
+        <div style="position:relative; flex:none;">
+          <select onChange="{{ onMonthSelect }}" value="{{ monthSelectValue }}" class="pmc-select" style="appearance:none; -webkit-appearance:none; background:#fff; border:1px solid #d0cfca; border-radius:8px; padding:8px 30px 8px 12px; font-size:13px; font-weight:700; color:#1d2226; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.06); white-space:nowrap;">
+            <option value="all">All months</option>
+            <sc-for list="{{ monthOptions }}" as="o" hint-placeholder-count="12">
+              <option value="{{ o.value }}">{{ o.text }}</option>
+            </sc-for>
+          </select>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8a86" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; right:11px; top:50%; transform:translateY(-50%); pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div style="position:relative; flex:none;">
+          <select onChange="{{ onYearSelect }}" value="{{ yearSelectValue }}" class="pmc-select" style="appearance:none; -webkit-appearance:none; background:#fff; border:1px solid #d0cfca; border-radius:8px; padding:8px 30px 8px 12px; font-size:13px; font-weight:700; color:#1d2226; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.06);">
+            <option value="">Year</option>
+            <sc-for list="{{ yearOptions }}" as="y" hint-placeholder-count="3">
+              <option value="{{ y.value }}">{{ y.text }}</option>
+            </sc-for>
+          </select>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8a86" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; right:11px; top:50%; transform:translateY(-50%); pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div style="display:flex; align-items:center; border:1px solid #dcdbd7; border-radius:8px; overflow:hidden; background:#fff; flex:none;">
+          <button class="pmc-step" onClick="{{ onCurDec }}" style="width:30px; height:34px; border:none; background:#fff; font-size:18px; color:#5e5e5a; cursor:pointer;">−</button>
+          <div style="min-width:34px; text-align:center; font-size:14px; font-weight:700; color:#1d2226; border-left:1px solid #ececea; border-right:1px solid #ececea; line-height:34px;">{{ curCount }}</div>
+          <button class="pmc-step" onClick="{{ onCurInc }}" style="width:30px; height:34px; border:none; background:#fff; font-size:18px; color:#5e5e5a; cursor:pointer;">+</button>
+        </div>
+        <span style="font-size:11.5px; font-weight:600; color:#4a5170; white-space:nowrap;">posts</span>
       </div>
-      <div style="width:1px; height:22px; background:#e6e5e1; flex:none;"></div>
-      <div class="pmc-scroll" style="display:flex; gap:7px; overflow-x:auto; flex:1; -webkit-overflow-scrolling:touch; padding-bottom:2px;">
-        <sc-for list="{{ monthChips }}" as="m" hint-placeholder-count="12">
-          <button class="pmc-mchip" onClick="{{ m.onToggle }}" style="{{ m.style }}">
-            <span>{{ m.label }}</span>
-            <sc-if value="{{ m.hasPosts }}" hint-placeholder-val="{{ true }}"><span style="{{ m.badgeStyle }}">{{ m.count }}</span></sc-if>
-          </button>
-        </sc-for>
+
+      <div style="width:1px; height:26px; background:#b9c0d8; flex:none;"></div>
+
+      <!-- cluster: add content -->
+      <div style="display:flex; align-items:center; gap:12px 14px; flex:none; flex-wrap:wrap; justify-content:center;">
+        <div style="display:inline-flex; align-items:center; gap:8px; flex:none;">
+          <button onClick="{{ setModeManual }}" style="{{ segManualStyle }}">Use Post Writer Content</button>
+          <button onClick="{{ setModeImport }}" style="{{ segImportStyle }}">Upload Content Doc</button>
+        </div>
+        <sc-if value="{{ showImportDrop }}" hint-placeholder-val="{{ false }}">
+          <label style="flex:1; min-width:180px; display:flex; align-items:center; gap:11px; border:1.5px dashed #b9c0d8; border-radius:10px; padding:11px 16px; background:#fbfbfd; cursor:pointer; transition:border-color .12s, background .12s;" onDragOver="{{ navOnDragOver }}" onDragLeave="{{ navOnDragLeave }}" onDrop="{{ navOnDrop }}">
+            <input type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange="{{ navOnDocFile }}" style="display:none;" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e4a85" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M20 17v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/></svg>
+            <div style="font-size:12.5px; font-weight:600; color:{{ navDropColor }};">{{ navDropHint }}</div>
+          </label>
+        </sc-if>
       </div>
     </div>
 
+    <!-- month picker: target label removed -->
+
     <div class="pmc-scroll" style="flex:1; overflow-y:auto; padding:24px clamp(14px,3vw,32px) 50px;">
+      <div style="display:flex; align-items:baseline; gap:10px; margin:0 3px 20px;">
+        <h1 style="margin:0; font-size:23px; font-weight:800; letter-spacing:-0.01em; color:#1d2226;">{{ pickerTitle }}</h1>
+        <span style="font-size:13px; font-weight:600; color:#6a6a66;">{{ pickerCountLabel }}</span>
+      </div>
       <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="1">
         <div style="margin-bottom:34px;">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
-            <div style="display:flex; align-items:baseline; gap:10px;">
-              <h2 style="font-size:18px; font-weight:800; letter-spacing:-0.01em; margin:0; color:#1d2226;">{{ sec.title }}</h2>
-              <span style="font-size:13px; color:#9a9a95;">{{ sec.countLabel }}</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:12.5px; font-weight:600; color:#8a8a86;">Posts this month</span>
-              <div style="display:flex; align-items:center; border:1px solid #dcdbd7; border-radius:9px; overflow:hidden; background:#fff;">
-                <button class="pmc-step" onClick="{{ sec.onDec }}" style="width:34px; height:34px; border:none; background:#fff; font-size:19px; color:#5e5e5a; cursor:pointer;">−</button>
-                <div style="width:40px; text-align:center; font-size:15px; font-weight:700; color:#1d2226; border-left:1px solid #ececea; border-right:1px solid #ececea; line-height:34px;">{{ sec.count }}</div>
-                <button class="pmc-step" onClick="{{ sec.onInc }}" style="width:34px; height:34px; border:none; background:#fff; font-size:19px; color:#5e5e5a; cursor:pointer;">+</button>
-              </div>
-              <span style="font-size:11.5px; color:#bdbdb8;">target 12</span>
-            </div>
-          </div>
-
           <sc-if value="{{ sec.empty }}" hint-placeholder-val="{{ false }}">
-            <div style="border:1.5px dashed #d6d5d1; border-radius:11px; padding:30px; text-align:center; color:#a0a09b; font-size:13.5px; background:#fbfbfa;">No posts yet — use the stepper above or the tile below to build this month.</div>
+            <div style="border:1.5px dashed #d6d5d1; border-radius:11px; padding:30px; text-align:center; color:#a0a09b; font-size:13.5px; background:#fbfbfa; margin-bottom:22px;">No posts yet — use the stepper or the Add / Import controls above to build this month.</div>
           </sc-if>
+
 
           <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(338px, 1fr)); gap:22px;">
             <sc-for list="{{ sec.cards }}" as="c" hint-placeholder-count="3">
@@ -204,15 +269,14 @@
                 </sc-if>
                 <sc-if value="{{ c.expanded }}" hint-placeholder-val="{{ false }}">
                   <div style="padding:10px 14px 2px;">
-                    <textarea value="{{ body }}" onInput="{{ setBody }}" onPaste="{{ onBodyPaste }}" rows="6" placeholder="Write Brad's post, paste from Word, or Generate…" style="width:100%; padding:11px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.5; color:#1d2226; resize:vertical;"></textarea>
+                    <textarea value="{{ body }}" onInput="{{ setBody }}" onPaste="{{ onBodyPaste }}" rows="6" placeholder="Write Brad's post or paste from Word…" style="width:100%; padding:11px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.5; color:#1d2226; resize:vertical;"></textarea>
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-top:5px;">
                       <span style="font-size:10.5px; color:#a0a09b;">Paste from Word — auto-cleaned, emojis kept</span>
                       <span style="font-size:11px; color:#a0a09b;">{{ bodyCount }} chars</span>
                     </div>
                     <div style="display:flex; gap:7px; margin-top:8px;">
-                      <button onClick="{{ generateText }}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:#1e4a85; border:1px solid #1e4a85; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; color:#fff; box-shadow:0 2px 8px rgba(30,74,133,.32);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4z"/></svg>{{ genLabel }}</button>
-                      <button onClick="{{ cancelWriting }}" class="pmc-back" style="display:flex; align-items:center; gap:6px; background:#fdecec; border:1px solid #f3b4b4; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; color:#b4332b;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#b4332b" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Cancel</button>
-                      <button onClick="{{ saveText }}" class="pmc-back" style="display:flex; align-items:center; gap:6px; background:#e7f7ee; border:1px solid #b6e3cb; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; color:#1f8a5b;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{{ saveTextLabel }}</button>
+                      <button onClick="{{ cancelWriting }}" class="pmc-back" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:#f4f4f2; border:1px solid #dcdbd7; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; color:#5e5e5a;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5e5e5a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Cancel</button>
+                      <button onClick="{{ saveText }}" class="pmc-back" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:#e7f7ee; border:1px solid #b6e3cb; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; color:#1f8a5b;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{{ saveTextLabel }}</button>
                     </div>
                   </div>
                 </sc-if>
@@ -228,11 +292,14 @@
                         <button onClick="{{ f.onClick }}" style="{{ f.style }}"><span style="font-weight:700;">{{ f.label }}</span><span style="opacity:.7;">{{ f.preview }}</span></button>
                       </sc-for>
                     </div>
+                    <sc-if value="{{ footerIsCustom }}" hint-placeholder-val="{{ false }}">
+                      <textarea class="pmc-input" value="{{ footerCustomText }}" onInput="{{ setFooterCustom }}" rows="3" placeholder="Write a custom footer or CTA for this post…" style="width:100%; margin-top:8px; padding:10px 12px; border:1px solid #dcdbd7; border-radius:8px; font-size:12.5px; line-height:1.45; color:#1d2226; resize:vertical;"></textarea>
+                    </sc-if>
                   </div>
                 </sc-if>
 
-                <sc-if value="{{ c.hasMedia }}" hint-placeholder-val="{{ true }}">
-                  <div class="pmc-graphic" onClick="{{ c.onGraphic }}" style="position:relative; margin-top:8px; width:100%; aspect-ratio:{{ c.gAspect }}; background:{{ placeholderBg }}; overflow:hidden; cursor:pointer;">
+                <sc-if value="{{ c.mediaVisible }}" hint-placeholder-val="{{ true }}">
+                  <div class="pmc-graphic" style="position:relative; margin-top:8px; width:100%; aspect-ratio:{{ c.gAspect }}; background:{{ placeholderBg }}; overflow:hidden;">
                     <sc-if value="{{ c.noGraphic }}" hint-placeholder-val="{{ true }}">
                       <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:18px; text-align:center;">
                         <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
@@ -243,11 +310,24 @@
                     <sc-if value="{{ c.hasGraphic }}" hint-placeholder-val="{{ false }}">
                       <div style="position:absolute; inset:0;" dangerouslySetInnerHTML="{{ c.graphicHtml }}"></div>
                     </sc-if>
-                    <div class="pmc-gov" style="position:absolute; inset:0; background:rgba(14,34,54,0.55); display:flex; align-items:center; justify-content:center; opacity:0; transition:.15s;">
-                      <span style="display:flex; align-items:center; gap:7px; background:#fff; color:#0e2236; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:999px;">Edit graphic
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0e2236" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
-                      </span>
+                    <div class="pmc-gov" style="position:absolute; inset:0; background:rgba(14,34,54,0.55); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; opacity:0; transition:.15s;">
+                      <div style="display:flex; gap:2px; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.55); border-radius:999px; padding:3px;">
+                        <span onClick="{{ c.onGraphicOn }}" style="{{ c.segGraphicStyle }}">Graphic</span>
+                        <span onClick="{{ c.onGraphicOff }}" style="{{ c.segNoneStyle }}">No graphic</span>
+                      </div>
+                      <button onClick="{{ c.onCustomize }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:none; color:#0e2236; font-size:12.5px; font-weight:700; padding:8px 15px; border-radius:999px; cursor:pointer;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0e2236" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                        Customize template
+                      </button>
                     </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ c.showAddBar }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:8px 16px 0;">
+                    <button onClick="{{ c.onAddGraphic }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:7px; padding:10px; border:1.5px dashed #cdccc8; border-radius:9px; background:#fbfbfa; color:#6a6a66; font-size:12.5px; font-weight:700; cursor:pointer;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                      Add graphic
+                    </button>
                   </div>
                 </sc-if>
 
@@ -276,6 +356,40 @@
       </sc-for>
     </div>
   </div>
+  </sc-if>
+
+  <!-- ===================== PNG EXPORT MODAL ===================== -->
+  <sc-if value="{{ pngOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePng }}" style="position:absolute; inset:0; background:rgba(14,34,54,0.55); display:flex; align-items:center; justify-content:center; z-index:80; padding:24px;">
+      <div onClick="{{ stop }}" style="width:410px; max-width:100%; background:#fff; border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,0.32); padding:26px 26px 24px;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <div style="width:34px; height:34px; border-radius:9px; background:#e7f7ee; display:flex; align-items:center; justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
+          </div>
+          <div>
+            <div style="font-size:15.5px; font-weight:800; color:#1d2226;">Download graphics as PNG</div>
+            <div style="font-size:12px; color:#9a9a95;">{{ pngSubtitle }}</div>
+          </div>
+        </div>
+        <div style="margin-top:22px;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;">
+            <span style="font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#a0a09b;">How many to download</span>
+            <span style="font-size:14px; font-weight:800; color:#1f8a5b;">{{ pngCountLabel }}</span>
+          </div>
+          <input type="range" min="1" max="{{ pngMax }}" value="{{ pngCount }}" onInput="{{ setPngCount }}" style="width:100%; accent-color:#1f8a5b;" />
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:#b0b0ab; margin-top:4px;"><span>1</span><span>All · {{ pngMax }}</span></div>
+        </div>
+        <sc-if value="{{ pngBusy }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:20px; display:flex; align-items:center; gap:11px;"><div style="width:20px; height:20px; border-radius:50%; border:3px solid #efe9da; border-top-color:#1f8a5b; animation:pmcspin .8s linear infinite; flex:none;"></div><span style="font-size:13px; color:#5e5e5a;">{{ pngStatus }}</span></div>
+        </sc-if>
+        <sc-if value="{{ pngIdle }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; gap:9px; margin-top:24px;">
+            <button onClick="{{ closePng }}" class="pmc-back" style="flex:none; background:#faf9f7; border:1px solid #e0dfdb; padding:11px 18px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; color:#5e5e5a;">Cancel</button>
+            <button onClick="{{ runPngExport }}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:#1F8A5B; border:1px solid #1F8A5B; padding:11px; border-radius:9px; cursor:pointer; font-size:13.5px; font-weight:700; color:#fff; box-shadow:0 2px 8px rgba(31,138,91,.32);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Download {{ pngCountLabel }}</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
   </sc-if>
 
   <!-- ===================== BRAND TEMPLATES MODAL ===================== -->
@@ -332,14 +446,18 @@
             <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin-bottom:10px;">Template</div>
             <div onClick="{{ onTplClick }}" style="display:grid; grid-template-columns:repeat(3,1fr); gap:7px;" dangerouslySetInnerHTML="{{ tplHtml }}"></div>
 
-            <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin:22px 0 10px;">Color</div>
-            <div onClick="{{ onVarClick }}" style="display:flex; gap:10px;" dangerouslySetInnerHTML="{{ varHtml }}"></div>
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin:22px 0 10px;">Type color</div>
+            <div onClick="{{ onTxtClick }}" style="{{ colorRowStyle }}" dangerouslySetInnerHTML="{{ txtHtml }}"></div>
+
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin:22px 0 10px;">Background color</div>
+            <div onClick="{{ onBgClick }}" style="{{ colorRowStyle }}" dangerouslySetInnerHTML="{{ bgHtml }}"></div>
 
             <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin:22px 0 10px;">Size</div>
             <div onClick="{{ onSizeClick }}" style="display:flex; gap:8px;" dangerouslySetInnerHTML="{{ sizeHtml }}"></div>
 
             <div style="font-size:11px; font-weight:700; letter-spacing:0.07em; color:#a0a09b; text-transform:uppercase; margin:22px 0 10px;">Headline text</div>
             <textarea class="pmc-textarea pmc-input" value="{{ draftText }}" onInput="{{ setDraftText }}" rows="4" placeholder="Short, punchy line…" style="width:100%; padding:11px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.5; color:#1d2226; resize:vertical; transition:.15s;"></textarea>
+            <button onClick="{{ regenPhrase }}" class="pmc-back" style="margin-top:8px; display:inline-flex; align-items:center; gap:7px; background:#F7F2E6; border:1px solid #E2D4B4; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; color:#7a6a3a;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a0843a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>New phrase from post</button>
 
             <sc-if value="{{ draftIsHeadline }}" hint-placeholder-val="{{ false }}">
               <div>
@@ -373,7 +491,7 @@
               <button onClick="{{ removeGfx }}" class="pmc-back" style="background:#faf9f7; border:1px solid #e0dfdb; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; color:#b4332b;">Remove graphic</button>
             </sc-if>
             <button onClick="{{ closeGfx }}" class="pmc-back" style="background:#faf9f7; border:1px solid #e0dfdb; padding:10px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; color:#3b3b38;">Cancel</button>
-            <button onClick="{{ applyGfx }}" style="background:#1e4a85; border:1px solid #1e4a85; padding:10px 18px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">Apply to post</button>
+            <button onClick="{{ applyGfx }}" style="background:var(--cos-grad-violet); border:none; padding:10px 18px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">Apply to post</button>
           </div>
         </div>
 
@@ -422,7 +540,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C2A24A&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;,&quot;options&quot;:[&quot;#C2A24A&quot;,&quot;#1e4a85&quot;,&quot;#22867c&quot;,&quot;#2e9e62&quot;,&quot;#b4332b&quot;]},&quot;showEngagement&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;monthlyTarget&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12,&quot;min&quot;:1,&quot;max&quot;:30,&quot;unit&quot;:&quot; posts&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Workflow&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;current&quot;,&quot;options&quot;:[&quot;current&quot;,&quot;all&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workflow&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#6818F8&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;,&quot;options&quot;:[&quot;#6818F8&quot;,&quot;#1921FE&quot;,&quot;#C1229C&quot;,&quot;#1e4a85&quot;,&quot;#22867c&quot;]},&quot;showEngagement&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;monthlyTarget&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12,&quot;min&quot;:1,&quot;max&quot;:30,&quot;unit&quot;:&quot; posts&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Workflow&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;current&quot;,&quot;options&quot;:[&quot;current&quot;,&quot;all&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workflow&quot;}}">
 class Component extends DCLogic {
   constructor(props){
     super(props);
@@ -433,33 +551,42 @@ class Component extends DCLogic {
       expandedIndex: null,
       photo: "assets/brad.jpg",
       photoColor: "#1e4a85",
+      bradName: this.BRAD_NAME,
       bradTitle: this.BRAD_TITLE,
+      founders: [{ name: this.BRAD_NAME, title: this.BRAD_TITLE, photo: "assets/brad.jpg", photoColor: "#1e4a85" }],
+      founderIndex: 0,
       team: null,
       teamOpen: false,
-      posts: this.makeDefaults(),
+      posts: [],
       modal: null, // {stage:'sending'|'done', count}
       gfx: null,   // {postIdx, draft, existing}
       brandOpen: false,
       dlOpen: false,
       bradOpen: false,
+      pngOpen: false, pngBusy: false, pngCount: 1, savedFlash: false, savedAt: (()=>{ try{ const v=localStorage.getItem("conneticPostBuilder.v7_savedAt"); return v? +v : null; }catch(e){ return null; } })(),
       genBusy: false,
       linkOpen: false,
       linkDraft: "",
       cloud: { ready:false, user:null, skip:false },
     };
     const saved=this._loadSaved();
-    if(saved){ this.state=Object.assign({}, this.state, saved); }
+    if(saved){ this.state=Object.assign({}, this.state, saved);
+      if(!Array.isArray(this.state.founders) || !this.state.founders.length){ this.state.founders=[{ name:this.state.bradName||this.BRAD_NAME, title:this.state.bradTitle||this.BRAD_TITLE, photo:this.state.photo, photoColor:this.state.photoColor }]; this.state.founderIndex=0; }
+      const cf=this.state.founders[this.state.founderIndex]||this.state.founders[0];
+      if(cf){ this.state.bradName=cf.name; this.state.bradTitle=cf.title; this.state.photo=cf.photo; this.state.photoColor=cf.photoColor; }
+    }
     // Default view is always a single-month gallery of the current month
     this.state.selectedMonths=[this.CURRENT];
   }
 
   SAVE_KEY = "conneticPostBuilder.v7";
-  SHARED_ID = "connetic-team";   // one shared workspace for the whole team
+  FIRM_ID = "havener";
+  CLIENT_ID = "connetic";
   _loadSaved(){ try{ const r=localStorage.getItem(this.SAVE_KEY); if(r){ const d=JSON.parse(r); if(d&&Array.isArray(d.posts)&&d.posts.length) return d; } }catch(e){} return null; }
-  _persist(){ try{ const {posts,photo,photoColor,bradTitle,selectedMonths,team}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradTitle,selectedMonths,team})); }catch(e){} this._cloudSave(); }
+  _persist(){ try{ const {posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team}=this.state; localStorage.setItem(this.SAVE_KEY, JSON.stringify({posts,photo,photoColor,bradName,bradTitle,founders,founderIndex,selectedMonths,team})); }catch(e){} this._cloudSave(); }
   componentDidUpdate(pp, ps){
     if(!ps) return;
-    if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradTitle!==this.state.bradTitle || ps.selectedMonths!==this.state.selectedMonths || ps.team!==this.state.team) this._persist();
+    if(ps.posts!==this.state.posts || ps.photo!==this.state.photo || ps.photoColor!==this.state.photoColor || ps.bradName!==this.state.bradName || ps.bradTitle!==this.state.bradTitle || ps.founders!==this.state.founders || ps.selectedMonths!==this.state.selectedMonths || ps.team!==this.state.team) this._persist();
     // A teammate's update arrived while editing — apply it now that editing is done.
     if(this._pendingRemote && this.state.expandedIndex==null && !this.state.gfx){
       const d=this._pendingRemote; this._pendingRemote=null; this._applyRemote(d);
@@ -490,12 +617,18 @@ class Component extends DCLogic {
       try{
         if(!window.firebase.apps || !window.firebase.apps.length) window.firebase.initializeApp(this.FB_CONFIG);
         const db=window.firebase.firestore();
+        const wsRef=db.collection("firms").doc(this.FIRM_ID).collection("clients").doc(this.CLIENT_ID);
+        const inboxRef=wsRef.collection("inbox");
         window.PBCloud={
-          load:(id)=>db.collection("builders").doc(id).get().then(s=>s.exists?s.data():null),
-          save:(id,data)=>db.collection("builders").doc(id).set(data),
-          subscribe:(id,cb)=>db.collection("builders").doc(id).onSnapshot(
+          load:()=>wsRef.get().then(s=>s.exists?s.data():null),
+          save:(data)=>wsRef.set(data),
+          subscribe:(cb)=>wsRef.onSnapshot(
             s=>{ if(s.exists) cb(s.data(), s.metadata); },
             e=>console.warn("cloud subscribe failed", e)
+          ),
+          subscribeInbox:(cb)=>inboxRef.onSnapshot(
+            snap=>{ const arr=[]; snap.forEach(d=>arr.push(d.data())); cb(arr); },
+            e=>console.warn("inbox subscribe failed", e)
           ),
         };
         this._startCloud();
@@ -513,7 +646,7 @@ class Component extends DCLogic {
   async _cloudStart(){
     this.setState(p=>({ cloud:{ ...p.cloud, ready:true } }));
     try{
-      const remote = await window.PBCloud.load(this.SHARED_ID);
+      const remote = await window.PBCloud.load();
       if(remote && Array.isArray(remote.posts) && remote.posts.length){
         this._applyRemote(remote, true);   // adopt the team's latest
       } else {
@@ -521,10 +654,11 @@ class Component extends DCLogic {
       }
     }catch(e){ console.warn("cloud load failed", e); }
     this._subscribeShared();
+    this._subscribeInbox();
   }
   _subscribeShared(){
     if(this._unsub || !window.PBCloud || !window.PBCloud.subscribe) return;
-    this._unsub = window.PBCloud.subscribe(this.SHARED_ID, (data, meta)=>{
+    this._unsub = window.PBCloud.subscribe((data, meta)=>{
       if(!data) return;
       if(meta && meta.hasPendingWrites) return;              // our own not-yet-committed write
       if(data.rev && data.rev === this._lastLocalRev) return; // echo of our own last save
@@ -554,19 +688,55 @@ class Component extends DCLogic {
       if(!this._clientId) this._clientId=Math.random().toString(36).slice(2,8);
       const rev = Date.now()+"-"+this._clientId;
       this._lastLocalRev = rev;
-      window.PBCloud.save(this.SHARED_ID, {posts,photo,photoColor,bradTitle, rev})
+      window.PBCloud.save({posts,photo,photoColor,bradTitle, rev})
         .catch(e=>console.warn("cloud save failed", e)); };
     if(now) go(); else this._cloudT=setTimeout(go, 800);
   }
-  componentWillUnmount(){ if(this._unsub){ try{ this._unsub(); }catch(e){} this._unsub=null; } }
+  componentWillUnmount(){
+    if(this._unsub){ try{ this._unsub(); }catch(e){} this._unsub=null; }
+    if(this._unsubInbox){ try{ this._unsubInbox(); }catch(e){} this._unsubInbox=null; }
+  }
+
+  // ---- Inbox: posts pushed in from the writer app, matched by year + month + post # ----
+  _subscribeInbox(){
+    if(this._unsubInbox || !window.PBCloud || !window.PBCloud.subscribeInbox) return;
+    this._unsubInbox = window.PBCloud.subscribeInbox(items=>{ this._applyInbox(items); });
+  }
+  _applyInbox(items){
+    if(!Array.isArray(items) || !items.length) return;
+    this.setState(s=>{
+      let posts=s.posts.slice();
+      let dirty=false;
+      // apply lower post numbers first so cards fill in order
+      const sorted=items.slice().sort((a,b)=> (Number(a.month)-Number(b.month)) || (Number(a.postNumber)-Number(b.postNumber)) );
+      sorted.forEach(it=>{
+        const year=Number(it.year), month=Number(it.month), num=Number(it.postNumber);
+        if(!year || !month || !num) return;
+        if(year!==this.YEAR) return;              // this app currently handles one year
+        const mi=month-1;
+        if(mi<0 || mi>11) return;
+        const rev=String(it.sentAt || it.rev || it.body || "");
+        const body=(it.body!=null ? it.body : "").toString();
+        let positions=[];
+        posts.forEach((p,idx)=>{ if(p.monthIndex===mi) positions.push(idx); });
+        while(positions.length < num){ posts.push(this.blankPost(mi)); positions.push(posts.length-1); dirty=true; }
+        const targetIdx=positions[num-1];
+        const tp=posts[targetIdx];
+        if(tp.importRev===rev) return;           // this exact version already applied (respects later manual edits)
+        posts[targetIdx]={...tp, body, importKey:year+"-"+month+"-"+num, importRev:rev};
+        dirty=true;
+      });
+      return dirty ? { posts } : {};
+    });
+  }
 
   MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   MSHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   YEAR = 2026;
   CURRENT = 6;
-  BRAD_NAME = "Brad Zapp";
-  BRAD_TITLE = "CFP\u00ae · President & Fund Manager, Connetic RIA LLC";
-  BUILDER_URL = "https://claude.ai/design/p/dea9ad5b-5ed1-48c3-b4ad-efdb82d3891e?file=Connetic+Founder+Studio.dc.html&via=share";
+  BRAD_NAME = "Bill Remington";
+  BRAD_TITLE = "Sales Director, Culture Foundry";
+  BUILDER_URL = "https://claude.ai/design/p/dea9ad5b-5ed1-48c3-b4ad-efdb82d3891e?file=Culture Foundry+Founder+Studio.dc.html&via=share";
   PLACEHOLDER_BG = "linear-gradient(135deg,#0e2236,#1e6f7e)";
   SWATCHES = ["#1e4a85","#22867c","#2e9e62","#0A66C2","#0e2236","#E0A93B"];
   COLORS_G = { navy:"#1e4a85", teal:"#22867c", green:"#2e9e62", ink:"#0e2236" };
@@ -587,12 +757,15 @@ class Component extends DCLogic {
   LIB = [
     {id:"network", src:"assets/img/connetic-network.png", label:"Network"},
     {id:"tech", src:"assets/img/connetic-tech.png", label:"Tech map"},
-    {id:"brad1", src:"assets/img/brad-futureproof.jpg", label:"Brad — stage"},
-    {id:"brad2", src:"assets/img/brad-balcony.jpg", label:"Brad — candid"},
+    {id:"brad1", src:"assets/img/brad-futureproof.jpg", label:"Bill — stage"},
+    {id:"brad2", src:"assets/img/brad-balcony.jpg", label:"Bill — candid"},
   ];
-  GFX_TPL = [["statement","Statement"],["megastatement","Big statement"],["headline","Headline"],["spotlight","Spotlight"],["bigcenter","Center quote"],["twopart","Two-part"],["arrowpoint","Arrow point"],["list","Numbered list"],["arrowlist","Arrow list"],["socialcard","Social card"],["photoquote","Photo quote"],["spokesperson","Spokesperson"],["image","Photo"]];
+  GFX_TPL = [["statement","Statement"],["megastatement","Big statement"],["headline","Headline"],["spotlight","Spotlight"],["bigcenter","Center quote"],["twopart","Two-part"],["arrowpoint","Arrow point"],["list","Numbered list"],["arrowlist","Arrow list"],["socialcard","Social card"],["photoquote","Photo quote"],["spokesperson","Spokesperson"],["image","Photo"],["videoph","Video placeholder"]];
   GFX_VAR = [["navy","Navy","#1e4a85"],["teal","Teal","#22867c"],["green","Green","#2e9e62"],["ink","Ink","#0e2236"]];
-  GFX_SIZE = [["square","Square"],["banner","Banner"],["tall","Tall"]];
+  TPL_VAR = { statement:"navy", megastatement:"ink", headline:"teal", spotlight:"navy", bigcenter:"green", twopart:"ink", arrowpoint:"teal", list:"navy", arrowlist:"green", socialcard:"teal", photoquote:"ink", spokesperson:"navy", image:"ink", videoph:"navy" };
+  GFX_TXT = [["White","#FFFFFF"],["Ink","#0e2236"],["Gold","#E0A93B"],["Lime","#8CC63F"]];
+  GFX_BG = [["Navy","#1e4a85"],["Teal","#22867c"],["Green","#2e9e62"],["Ink","#0e2236"],["Light","#F5F5F2"]];
+  GFX_SIZE = [["square","1200 × 1200"],["banner","1200 × 627"],["tall","1200 × 1600"]];
   FOOTERS = [
     "∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿\n\n📌 Exposure to innovation outside of public markets.\n\n📞 Let's talk about what that could look like in your practice.",
     "∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿\n\n🤝 Private-market access, built for everyday portfolios.\n\n📩 DM me to see how it could fit your clients.",
@@ -608,7 +781,7 @@ class Component extends DCLogic {
       "We've now assessed 25,000 founders.\n\nNot from a warm-intro list. Not from a demo day. From people who simply applied \u2014 most of whom no traditional VC would have ever taken a meeting with.\n\nThat's more than 4,000 outcome data points, teaching Wendal what grit, resilience, and temperament actually look like in the wild. Not what they look like in a rehearsed pitch.\n\nHere's what surprised me after 27 years in this business: the signal was never where the industry told us to look. It wasn't the pedigree. It wasn't the intro. It was the founder.\n\nWhen you measure the right things, a fairer yes and a faster no fall out on their own.\n\nWhat signal do you trust most when you're betting on people?",
       "The hardest word in venture capital isn't \u201cno.\u201d\n\nIt's *delivering* one. Most founders never actually get it \u2014 they get ghosted for six months and left to infer it.\n\nThat's the quiet cruelty of this industry. It costs a fund nothing to stay silent, and it costs the founder everything.\n\nSo we made a promise we actually keep: 92% of founders get a clear yes or no within three business days. And if it's a no, you get the why \u2014 not a form letter, a reason.\n\nFast, honest feedback is the cheapest respect we can pay someone who is pouring their life into a company.\n\nWhen did a clear \u2018no\u2019 help you more than silence ever could?",
       "A pitch meeting is a beauty contest.\n\nMost VCs decide in the first ten minutes \u2014 on charisma, polish, and how closely the founder pattern-matches to the last person who raised. That's not analysis. That's vibes in a blazer.\n\nI watched it for 27 years. The most relentless, most coachable founders often present the worst, because they spent their time building instead of rehearsing.\n\nWendal spends 20 honest minutes measuring the things that actually predict outcomes: resilience, leadership, temperament, clarity of thought. No deck required.\n\nIt turns out that when you stop grading the performance, you find a very different \u2014 and much larger \u2014 set of winners.\n\nWhat's the most overrated thing our industry rewards in a pitch?",
-      "I've been the founder getting ghosted. I've also been the advisor on the other side of the table. That combination is the whole reason Connetic exists.\n\nWe didn't \u201cadd AI\u201d to an old playbook. We pioneered AI-driven venture capital \u2014 seven years training Wendal before it became the buzzword on every fund's homepage.\n\nFounder empathy isn't our tagline. It's the spec we built the entire system against.\n\nBecause I remember exactly what it felt like to be smart, prepared, and still locked out of the room for reasons that had nothing to do with the work.\n\nThe goal was never a cleverer machine. It was a fairer door.\n\nWhat's one door you wish someone had opened for you earlier?",
+      "I've been the founder getting ghosted. I've also been the advisor on the other side of the table. That combination is the whole reason Culture Foundry exists.\n\nWe didn't \u201cadd AI\u201d to an old playbook. We pioneered AI-driven venture capital \u2014 seven years training Wendal before it became the buzzword on every fund's homepage.\n\nFounder empathy isn't our tagline. It's the spec we built the entire system against.\n\nBecause I remember exactly what it felt like to be smart, prepared, and still locked out of the room for reasons that had nothing to do with the work.\n\nThe goal was never a cleverer machine. It was a fairer door.\n\nWhat's one door you wish someone had opened for you earlier?",
       "We're sector agnostic, and we actually mean it.\n\nHealthcare to fintech, infrastructure to consumer \u2014 we follow great founders, not whatever's trending on the timeline this quarter. \uD83D\uDE80\n\nWe write $250K to $500K at pre-seed and seed, into software-driven businesses valued at $15M or below. Small enough to move fast. Early enough to actually change the trajectory.\n\nWhat we're not doing is waiting for three other logos to commit before we'll look at you. \u201cWho else is in?\u201d might be the most overrated question in this entire industry.\n\nWe'd rather ask two things ourselves: is this founder relentless, and is the problem real?\n\nIf you're building something that fits, you don't need an intro. You need 20 minutes.",
       "34 states funded.\n\nNot a line on a slide \u2014 actual checks written into 34 different states. The next great company is not sitting in a coastal zip code waiting for permission.\n\nWhen I was an RIA, I watched brilliant operators in overlooked cities get passed over for no reason other than their area code. Capital clustered where it always had. Talent didn't.\n\nGeography is not a proxy for ability. It never was. It was just an easy filter for funds that didn't want to do the actual work.\n\nWendal does the work \u2014 the same way, everywhere.\n\nWhere's the most underrated place you've seen real talent come from?",
       "Diversity, for us, isn't a quota. It's an output.\n\n46% of our portfolio CEOs are women or minorities. The venture industry average is about 15%. We didn't get there with a mandate.\n\nWe got there by building the bias out of the process before it could sneak in. When an AI reads your application instead of your last name, your network, or your accent, the math quietly changes on its own.\n\nThis is the part I wish more people understood: fairness isn't in tension with returns. A wider net is simply a better net.\n\nYou don't have to choose between doing this right and doing this well.\n\nWhere else do you think \u2018fix the process\u2019 beats \u2018set a target\u2019?",
@@ -617,8 +790,8 @@ class Component extends DCLogic {
     const MAY = [
       "If you were starting an RIA tomorrow, from scratch, what would you build differently?\n\nI ask advisors this constantly. The answers are always bold \u2014 until I point out they could do most of it for their existing clients on Monday.\n\nThe gap between \u201chow I'd design it\u201d and \u201chow I run it\u201d is almost never about capability. It's about inertia.\n\nThe whole industry was wired before the products existed to serve everyone. That wiring is finally loosening.\n\nThe advisors who act on the new structure first won't just be early \u2014 they'll be the ones their clients tell their friends about.\n\nSo I'll ask you the same question: what would you do differently?",
       "\u201cThis is only for my high-net-worth clients.\u201d\n\nI've heard that reflex in a hundred rooms. And when I ask why \u2014 if the product is sound, legal, registered, and the minimum is accessible \u2014 the honest answer is rarely about the investment.\n\nIt's habit. It's how we were trained before the tools existed to do better.\n\nI spent 27 years inside that habit. I understand it completely. I also think it's the single biggest unexamined assumption in wealth management today.\n\nWhat assumption in your own practice would you most like to retire?",
-      "Pattern-matching funds the last decade. Data-driven conviction funds the next one.\n\nFor 27 years I watched capital flow to whoever looked most like the last success story. It felt rigorous. Mostly it was nostalgia with a spreadsheet attached.\n\nThe firms that win the next cycle won't be the ones with the best instincts about the past. They'll be the ones with the cleanest read on the present.\n\nThat's the bet behind everything we've built at Connetic.\n\nWhere do you think instinct still genuinely beats data \u2014 and where is it just comfortable?",
-      "Founders remember who took the meeting when they were a nobody.\n\nSo do clients, honestly. The advisor who treated a $200K account like it mattered earns the $2M rollover a decade later.\n\nThis business rewards patience and fairness far more than it likes to admit.\n\nWe built Connetic on the same principle: take the meeting, do the real work, give the honest answer \u2014 regardless of whose name is on the door or how big the check is.\n\nWho took a chance on you before you \u2018deserved\u2019 it?",
+      "Pattern-matching funds the last decade. Data-driven conviction funds the next one.\n\nFor 27 years I watched capital flow to whoever looked most like the last success story. It felt rigorous. Mostly it was nostalgia with a spreadsheet attached.\n\nThe firms that win the next cycle won't be the ones with the best instincts about the past. They'll be the ones with the cleanest read on the present.\n\nThat's the bet behind everything we've built at Culture Foundry.\n\nWhere do you think instinct still genuinely beats data \u2014 and where is it just comfortable?",
+      "Founders remember who took the meeting when they were a nobody.\n\nSo do clients, honestly. The advisor who treated a $200K account like it mattered earns the $2M rollover a decade later.\n\nThis business rewards patience and fairness far more than it likes to admit.\n\nWe built Culture Foundry on the same principle: take the meeting, do the real work, give the honest answer \u2014 regardless of whose name is on the door or how big the check is.\n\nWho took a chance on you before you \u2018deserved\u2019 it?",
       "Speed is a form of respect.\n\nThe average venture process runs four to six months. Ours runs about two weeks, from first conversation to term sheet.\n\nWe're not fast because we cut corners. We're fast because Wendal handles the diligence other firms park on a junior analyst's calendar for a quarter.\n\nEvery week a founder spends fundraising is a week they're not building. Giving that time back is the cheapest, highest-value capital we can offer anyone.\n\nWhere is slowness quietly costing your clients the most?",
       "Most people will never see a real venture deal in their lifetime.\n\nFor most of my career, I'd have told you that's just how it works. Now I think it's a design flaw \u2014 not a law of nature.\n\nThe minimums, the structures, the access: all of it was built for a world that no longer has to exist.\n\nThe interesting question isn't whether that changes. It's who helps their clients walk through the door first.\n\nIs your practice ready for that conversation?",
     ];
@@ -727,7 +900,7 @@ class Component extends DCLogic {
   }
   onAvatarFile = (e)=>{
     const f=e.target.files && e.target.files[0]; if(!f) return;
-    const r=new FileReader(); r.onload=()=>this.setState({photo:r.result}); r.readAsDataURL(f);
+    const r=new FileReader(); r.onload=()=>this.setState(s=>{ const founders=s.founders.slice(); founders[s.founderIndex]={...founders[s.founderIndex], photo:r.result}; return {founders, photo:r.result}; }); r.readAsDataURL(f);
   };
   onMediaUpload = (e)=>{
     const f=e.target.files && e.target.files[0]; if(!f) return;
@@ -736,6 +909,86 @@ class Component extends DCLogic {
 
   blankPost(mi){
     return { monthIndex:mi, body:"", degree:"1st", time:"now", verified:true, hasMedia:true, image:null, graphic:null, footer:0, linkedProject:null, likes:"0", comments:"0", reposts:"0" };
+  }
+
+  // ---- Import posts from a .docx ----
+  xmlDecode(s){ return String(s).replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&#x([0-9a-f]+);/gi,(m,h)=>String.fromCodePoint(parseInt(h,16))).replace(/&#(\d+);/g,(m,d)=>String.fromCodePoint(+d)).replace(/&amp;/g,"&"); }
+  docxParas(xml){
+    const out=[];
+    const body=(xml.split("<w:body")[1]||xml);
+    const chunks=body.split(/<w:p[ >]/).slice(1);
+    for(const ch of chunks){
+      const seg=ch.split("</w:p>")[0];
+      let b=seg.replace(/<w:r\b[^>]*>[\s\S]*?<\/w:r>/g,(run)=> /<w:rFonts\b[^>]*(Wingdings|Webdings|Symbol|ZapfDingbats|Marlett|Dingbats)/i.test(run) ? " " : run);
+      b=b.replace(/<w:br\b[^>]*\/?>/g,"\uE7FF").replace(/<w:cr\b[^>]*\/?>/g,"\uE7FF").replace(/<w:tab\b[^>]*\/?>/g,"\uE7FE");
+      b=b.replace(/<w:sym\b[^>]*w:char="([0-9A-Fa-f]+)"[^>]*\/?>/g,(m,ch)=>{ const code=parseInt(ch,16)&0xFF; return (code===0xB7||code===0xA7||code===0x6F||code===0x76)?"\u2022 ":""; });
+      b=b.replace(/<[^>]+>/g,"");
+      out.push(this.xmlDecode(b).replace(/\uE7FF/g,"\n").replace(/\uE7FE/g,"\t"));
+    }
+    return out;
+  }
+  splitDocxPosts(paras){
+    const isNumOnly=s=>/\d/.test(s)&&/^\s*(?:post\s*)?#?\s*\d+\s*[\.\):\u2013\u2014\-]?\s*$/i.test(s);
+    const numLead=s=>{ const m=String(s).match(/^\s*(?:post\s*)?#?\s*(\d+)\s*[\.\):\u2013\u2014\-]\s+(\S[\s\S]*)$/i); return m?m[2]:null; };
+    let groups=[], cur=null, used=false;
+    for(let i=0;i<paras.length;i++){
+      const p=paras[i];
+      if(isNumOnly(p)){ used=true; if(cur) groups.push(cur); cur=[]; continue; }
+      const lead=numLead(p);
+      if(lead!=null){ used=true; if(cur) groups.push(cur); cur=[lead]; continue; }
+      if(cur) cur.push(p);
+    }
+    if(cur) groups.push(cur);
+    if(!used){
+      groups=[]; cur=[]; let blanks=0;
+      for(const p of paras){
+        if(!p.trim()){ blanks++; if(blanks>=2 && cur.length){ groups.push(cur); cur=[]; } continue; }
+        blanks=0; cur.push(p);
+      }
+      if(cur.length) groups.push(cur);
+    }
+    return groups.map(g=>g.join("\n").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim()).filter(Boolean);
+  }
+  applyImported(mi, bodies){
+    const times=["2h","5h","1d","3h","8h","6h","1w","4h","2d","7h","1d","9h"];
+    const TPL=["statement","spotlight","bigcenter","twopart","headline","socialcard"];
+    this.setState(s=>{
+      const existing=s.posts.filter(p=>p.monthIndex===mi);
+      const others=s.posts.filter(p=>p.monthIndex!==mi);
+      const newOnes=bodies.map((body,i)=>{
+        const base=existing[i]?{...existing[i]}:this.blankPost(mi);
+        base.body=this.cleanLinkedIn(body);
+        if(!base.graphic){
+          base.hasMedia=true; base.mediaOff=false;
+          const tpl=TPL[i%TPL.length];
+          base.graphic={ template:tpl, variant:(this.TPL_VAR[tpl]||"navy"), image:this.COMPANY_IMGS[i%this.COMPANY_IMGS.length], size:"square", autoText:true };
+        } else if(base.graphic.autoText!==false){ base.graphic={...base.graphic, text:this.deriveText(base.body), autoText:true}; }
+        if(!base.time || !existing[i]) base.time=times[i%times.length];
+        return base;
+      });
+      const all=[...others, ...newOnes].sort((a,b)=>((a.monthIndex||0)-(b.monthIndex||0)));
+      return { posts: all, selectedMonths:[mi] };
+    });
+  }
+  async importDocx(file, mi){
+    if(!file) return;
+    const nm=(file.name||"").toLowerCase();
+    if(!nm.endsWith(".docx")){ this.setState({importStatus:{mi,text:"That isn't a .docx file",error:true}}); return; }
+    if(!window.JSZip){ this.setState({importStatus:{mi,text:"Still loading — try again in a moment",error:true}}); return; }
+    this.setState({importStatus:{mi,text:"Reading document…",error:false}});
+    try{
+      const buf=await file.arrayBuffer();
+      const z=await window.JSZip.loadAsync(buf);
+      const df=z.file("word/document.xml");
+      if(!df){ this.setState({importStatus:{mi,text:"Couldn't read that Word file",error:true}}); return; }
+      const xml=await df.async("string");
+      const bodies=this.splitDocxPosts(this.docxParas(xml));
+      if(!bodies.length){ this.setState({importStatus:{mi,text:"No posts found in that document",error:true}}); return; }
+      this.applyImported(mi, bodies);
+      this.setState({importStatus:{mi,text:`Imported ${bodies.length} post${bodies.length>1?"s":""} \u2713`,error:false}});
+      const tag=Date.now(); this._impTag=tag;
+      setTimeout(()=>{ if(this._impTag===tag) this.setState(st=>({importStatus:(st.importStatus&&st.importStatus.mi===mi)?null:st.importStatus})); }, 4500);
+    }catch(err){ console.warn("docx import failed", err); this.setState({importStatus:{mi,text:"Import failed — check the file",error:true}}); }
   }
   aspectOf(size){ return size==="banner" ? "1.91/1" : size==="tall" ? "3/4" : "1/1"; }
   deriveText(body){
@@ -776,7 +1029,7 @@ class Component extends DCLogic {
     return s;
   }
   gfxDefault(post){
-    return { template:"statement", variant:"navy", text:this.deriveText(post&&post.body), eyebrow:"CONNETIC INSIGHTS", image:this.LIB[0].src, size:"square", autoText:true };
+    return { template:"statement", variant:(this.TPL_VAR.statement||"navy"), text:this.deriveText(post&&post.body), eyebrow:"CULTURE FOUNDRY INSIGHTS", image:this.LIB[0].src, size:"square", autoText:true };
   }
   openGfx(idx){
     const p=this.state.posts[idx]; if(!p) return;
@@ -801,7 +1054,22 @@ class Component extends DCLogic {
 
   // ---- brand templates browser ----
   openBrand = ()=> this.setState({ brandOpen:true });
-  closeBrand2 = ()=> this.setState({ brandOpen:false });
+  closeBrand2 = ()=> this.setState(s=> (s.gfx && s.gfx.fromCard) ? { brandOpen:false, gfx:null } : { brandOpen:false });
+  setMediaOff = (idx, off)=> this.setState(s=>{
+    const posts=s.posts.slice(); const p=posts[idx]; if(!p) return {};
+    posts[idx]={...p, mediaOff:off}; return { posts };
+  });
+  enableMedia = (idx)=> this.setState(s=>{
+    const posts=s.posts.slice(); const p=posts[idx]; if(!p) return {};
+    const np={...p, mediaOff:false, hasMedia:true};
+    if(!np.graphic) np.graphic={...this.gfxDefault(p)};
+    posts[idx]=np; return { posts };
+  });
+  openBrandFor = (idx)=> this.setState(s=>{
+    const p=s.posts[idx]; if(!p) return {};
+    const draft = p.graphic ? {...this.gfxDefault(p), ...p.graphic} : this.gfxDefault(p);
+    return { editIndex:idx, gfx:{ postIdx:idx, draft, existing:!!p.graphic, fromCard:true }, brandOpen:true };
+  });
   _galleryTargetIdx(){
     const s=this.state;
     if(s.expandedIndex!=null && s.posts[s.expandedIndex]) return s.expandedIndex;
@@ -814,16 +1082,28 @@ class Component extends DCLogic {
     const idx=this._galleryTargetIdx();
     const p=this.state.posts[idx]; if(!p) return;
     const base = p.graphic ? {...this.gfxDefault(p), ...p.graphic} : this.gfxDefault(p);
-    const draft={...base, template:tpl};
+    const draft={...base, template:tpl, variant:(this.TPL_VAR[tpl]||(base&&base.variant)||"navy")};
     this.setState({ editIndex:idx, gfx:{ postIdx:idx, draft, existing:!!p.graphic } });
   }
   brandPick = (e)=>{
     const el=e.target.closest && e.target.closest("[data-tpl]");
     if(!el) return;
     const tpl=el.getAttribute("data-tpl");
-    if(this.state.gfx){ this.setDraft({template:tpl}); }
-    else { this.openGfxWithTemplate(tpl); }
-    this.setState({brandOpen:false});
+    this.setState(s=>{
+      if(!s.gfx){
+        const idx=this._galleryTargetIdx(); const p=s.posts[idx];
+        if(!p) return { brandOpen:false };
+        const base = p.graphic ? {...this.gfxDefault(p), ...p.graphic} : this.gfxDefault(p);
+        const draft={...base, template:tpl, variant:(this.TPL_VAR[tpl]||base.variant||"navy")};
+        const posts=s.posts.slice();
+        posts[idx]={...posts[idx], hasMedia:true, mediaOff:false, graphic:{...draft}};
+        return { posts, brandOpen:false, gfx:null, editIndex:idx };
+      }
+      const draft={...s.gfx.draft, template:tpl, variant:(this.TPL_VAR[tpl]||s.gfx.draft.variant||"navy")};
+      const posts=s.posts.slice();
+      posts[s.gfx.postIdx]={...posts[s.gfx.postIdx], hasMedia:true, mediaOff:false, graphic:{...draft}};
+      return { posts, brandOpen:false, gfx: {...s.gfx, draft, existing:true, fromCard:false} };
+    });
   };
   brandGridHtml(draft){
     return this.GFX_TPL.map(([id,label])=>{
@@ -878,13 +1158,28 @@ class Component extends DCLogic {
   }
   gfxHtml(cfg){
     const c=cfg||{};
+    let h=this._gfxHtmlRaw(cfg);
+    if(c.textColor){ const tc=c.textColor;
+      h=h.split('color:#fff').join('color:'+tc)
+         .split('color:#0e2236').join('color:'+tc)
+         .split('color:#1d2226').join('color:'+tc); }
+    // Enlarge all graphic text for mobile readability: names/titles (small) get the biggest boost, big headlines the least.
+    h=h.replace(/font-size:([0-9.]+)cqw/g,(m,n)=>{ const v=parseFloat(n); const f=v<3?1.42:(v<6?1.2:1.07); return 'font-size:'+(Math.round(v*f*100)/100)+'cqw'; });
+    return h;
+  }
+  _gfxHtmlRaw(cfg){
+    const c=cfg||{};
     const t=c.template||"statement";
+    if(t==="videoph"){ return `<div style="position:absolute;inset:0;overflow:hidden;container-type:size;background:#EDEEF0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.6cqw;font-family:'Poppins',sans-serif;">`+
+      `<svg viewBox="0 0 24 24" fill="none" stroke="#AEB4BB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:12cqw;height:12cqw;"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="#AEB4BB" stroke="none"/></svg>`+
+      `<div style="font-weight:600;font-size:3cqw;letter-spacing:.05em;color:#9AA0A7;">Video placeholder</div>`+
+    `</div>`; }
     const LIME="#8CC63F", GOLD="#E0A93B";
-    const grad=this.gGrad(c.variant||"teal");
+    const grad = c.bgColor ? c.bgColor : this.gGrad(c.variant||"teal");
     const img=c.image||this.FOUNDER_IMGS[0];
     const photo=this.state.photo||"assets/brad.jpg";
     const title=this.esc2(this.state.bradTitle||this.BRAD_TITLE);
-    const who="Brad Zapp, CFP\u00ae";
+    const who=(this.state.bradName||this.BRAD_NAME)+", CFP\u00ae";
     const DEF={statement:GOLD,megastatement:LIME,headline:LIME,spotlight:LIME,bigcenter:GOLD,twopart:GOLD,arrowpoint:GOLD,list:LIME,arrowlist:LIME,socialcard:"#1f7e79",photoquote:LIME,spokesperson:GOLD,image:LIME};
     const ACC=DEF[t]||GOLD;
     const Q=(x)=>this.renderQ(x,ACC);
@@ -994,7 +1289,7 @@ class Component extends DCLogic {
         `<div style="display:flex;align-items:center;gap:1.5cqw;margin-bottom:2.8cqw;">`+
           `<div style="width:6.3cqw;height:6.3cqw;border-radius:50%;overflow:hidden;border:0.25cqw solid #8CC63F;flex:none;background:#13314f;"><img src="${photo}" style="width:100%;height:100%;object-fit:cover;object-position:center 18%"/></div>`+
           `<div style="flex:1;"><div style="display:flex;align-items:center;gap:0.8cqw;"><span style="${D}font-weight:800;font-size:2.8cqw;color:#1f7e79;">${this.esc2(who)}</span><span style="width:2.3cqw;height:2.3cqw;border-radius:50%;background:#2c9bd6;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3cqw;">\u2713</span></div>`+
-          `<div style="font-weight:700;font-size:1.42cqw;letter-spacing:.14em;color:#0e2236;margin-top:0.3cqw;">CONNETIC</div></div>`+
+          `<div style="font-weight:700;font-size:1.42cqw;letter-spacing:.14em;color:#0e2236;margin-top:0.3cqw;">CULTURE FOUNDRY</div></div>`+
         `</div>`+
         `<div style="${D}font-weight:600;font-size:3.2cqw;line-height:1.28;color:#13283d;">${this.renderQ(text,"#1f7e79")}</div>`+
       `</div>`);
@@ -1020,7 +1315,7 @@ class Component extends DCLogic {
   varCss(hex,on){ return `width:34px;height:34px;border-radius:8px;cursor:pointer;background:${hex};border:2px solid ${on?'#1d2226':'transparent'};box-shadow:0 0 0 1px rgba(0,0,0,.1);padding:0;`; }
   segCss(on){ return `flex:1;padding:9px 6px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid ${on?'#1e4a85':'#e0dfdb'};background:${on?'#eef2fb':'#fff'};color:${on?'#1e4a85':'#3b3b38'};`; }
   gfxTplThumb(id, d){
-    const cfg={ template:id, variant:(d&&d.variant)||"teal", image:(d&&d.image)||this.FOUNDER_IMGS[0],
+    const cfg={ template:id, variant:(this.TPL_VAR[id]||"teal"), image:(d&&d.image)||this.FOUNDER_IMGS[0],
       text: (id==="list"||id==="arrowlist") ? "The Key Points\nAccess first\nBack conviction\nOpen the doors"
           : (id==="twopart"||id==="arrowpoint") ? "The old model is closed.\n\nWe're opening it."
           : "Access is the whole thesis." };
@@ -1041,22 +1336,75 @@ class Component extends DCLogic {
   }
   gfxVarHtml(d){ return this.GFX_VAR.map(([id,label,hex])=>`<button data-var="${id}" title="${label}" style="${this.varCss(hex, d&&d.variant===id)}"></button>`).join(""); }
   gfxSizeHtml(d){ return this.GFX_SIZE.map(([id,label])=>`<button data-size="${id}" style="${this.segCss(d&&d.size===id)}">${label}</button>`).join(""); }
-  onTplClick = (e)=>{ const el=e.target.closest && e.target.closest("[data-tpl]"); if(el) this.setDraft({template:el.getAttribute("data-tpl")}); };
+  onTplClick = (e)=>{ const el=e.target.closest && e.target.closest("[data-tpl]"); if(el){ const tpl=el.getAttribute("data-tpl"); this.setDraft({template:tpl, variant:(this.TPL_VAR[tpl]||"navy")}); } };
   onVarClick = (e)=>{ const el=e.target.closest && e.target.closest("[data-var]"); if(el) this.setDraft({variant:el.getAttribute("data-var")}); };
+  autoSwatch(kind,on){
+    return `<button data-${kind}="__auto" title="Template default" style="width:34px;height:34px;border-radius:8px;cursor:pointer;background:#fff;border:2px solid ${on?'#1d2226':'#e0dfdb'};box-shadow:0 0 0 1px rgba(0,0,0,.08);padding:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#7a7a76;">Auto</button>`;
+  }
+  gfxTxtHtml(d){ const cur=d&&d.textColor; return this.autoSwatch("txt",!cur)+this.GFX_TXT.map(([label,hex])=>`<button data-txt="${hex}" title="${label}" style="${this.varCss(hex, cur===hex)}"></button>`).join(""); }
+  gfxBgHtml(d){ const cur=d&&d.bgColor; return this.autoSwatch("bg",!cur)+this.GFX_BG.map(([label,hex])=>`<button data-bg="${hex}" title="${label}" style="${this.varCss(hex, cur===hex)}"></button>`).join(""); }
+  onTxtClick = (e)=>{ const el=e.target.closest && e.target.closest("[data-txt]"); const d=this.state.gfx&&this.state.gfx.draft; if(el && d && d.template){ const v=el.getAttribute("data-txt"); this.setDraft({textColor: v==="__auto"?null:v}); } };
+  onBgClick = (e)=>{ const el=e.target.closest && e.target.closest("[data-bg]"); const d=this.state.gfx&&this.state.gfx.draft; if(el && d && d.template){ const v=el.getAttribute("data-bg"); this.setDraft({bgColor: v==="__auto"?null:v}); } };
   onSizeClick = (e)=>{ const el=e.target.closest && e.target.closest("[data-size]"); if(el) this.setDraft({size:el.getAttribute("data-size")}); };
 
   toggleDl = ()=> this.setState(s=>({ dlOpen:!s.dlOpen }));
   closeDl = ()=> this.setState({ dlOpen:false });
+  saveNow = ()=>{ this._persist(); this._cloudSave(true); const ts=Date.now(); try{ localStorage.setItem(this.SAVE_KEY+"_savedAt", String(ts)); }catch(e){} this.setState({ savedFlash:true, savedAt:ts }); clearTimeout(this._svT); this._svT=setTimeout(()=>this.setState({ savedFlash:false }), 2200); };
+  fmtSavedAt(ts){ if(!ts) return ""; const d=new Date(ts); return d.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"}); }
+  poignantLines(body){
+    let s=String(body||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}]/gu,"").replace(/\r/g,"");
+    let parts=s.split(/(?<=[.!?])\s+|\n+/).map(x=>x.replace(/\*/g,"").replace(/\s+/g," ").trim()).filter(Boolean);
+    parts=parts.filter(t=>{ const w=t.split(/\s+/).length; if(/\?\s*$/.test(t)) return false; return w>=3 && w<=16; });
+    const seen={}; parts=parts.filter(t=>{ const k=t.toLowerCase(); if(seen[k]) return false; seen[k]=1; return true; });
+    return parts.length ? parts : [this.deriveText(body)];
+  }
+  // ---- PNG graphics export ----
+  sizePx(size){ return size==="banner" ? [1200,627] : size==="tall" ? [1200,1600] : [1200,1200]; }
+  graphicIdxs(){ const sel=this.state.selectedMonths||[]; return this.state.posts.map((p,i)=>({p,i})).filter(o=>sel.indexOf(o.p.monthIndex)>=0 && o.p.graphic).map(o=>o.i); }
+  pickPNG = ()=>{ const n=this.graphicIdxs().length; this.setState({ dlOpen:false, pngOpen:true, pngBusy:false, pngCount: n||1 }); };
+  closePng = ()=>{ if(this.state.pngBusy) return; this.setState({ pngOpen:false }); };
+  setPngCount = (e)=> this.setState({ pngCount: Math.max(1, parseInt(e.target.value,10)||1) });
+  runPngExport = async ()=>{
+    if(this.state.pngBusy) return;
+    const all=this.graphicIdxs();
+    const n=Math.max(1, Math.min(this.state.pngCount||all.length, all.length));
+    const sel=all.slice(0,n);
+    if(!sel.length){ this.setState({pngOpen:false}); return; }
+    if(!window.htmlToImage){ this.setState({pngStatus:"Still loading exporter — try again in a moment."}); return; }
+    this.setState({ pngBusy:true, pngStatus:"Preparing…" });
+    const zip = window.JSZip ? new window.JSZip() : null;
+    for(let k=0;k<sel.length;k++){
+      const idx=sel[k], p=this.state.posts[idx], g=p.graphic;
+      this.setState({ pngStatus:"Rendering "+(k+1)+" of "+sel.length+"…" });
+      const [w,h]=this.sizePx(g.size);
+      const holder=document.createElement("div");
+      holder.style.cssText="position:fixed;left:-99999px;top:0;width:"+w+"px;height:"+h+"px;overflow:hidden;";
+      holder.innerHTML=this.gfxHtml(this.gfxEff(p)||g);
+      const root=holder.firstElementChild;
+      if(root){ root.style.position="relative"; root.style.inset="auto"; root.style.width=w+"px"; root.style.height=h+"px"; }
+      document.body.appendChild(holder);
+      await new Promise(r=>setTimeout(r,120));
+      let dataUrl=null;
+      try{ dataUrl=await window.htmlToImage.toPng(root||holder,{width:w,height:h,pixelRatio:1,cacheBust:true}); }catch(e){ console.warn("png fail",e); }
+      holder.remove();
+      if(dataUrl){ const name=this.fileName(p.monthIndex,this.numOf(idx)); if(zip){ zip.file(name, dataUrl.split(",")[1], {base64:true}); } else { const a=document.createElement("a"); a.href=dataUrl; a.download=name; a.click(); await new Promise(r=>setTimeout(r,300)); } }
+    }
+    if(zip){ this.setState({pngStatus:"Zipping…"}); const blob=await zip.generateAsync({type:"blob"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="Culture Foundry_Graphics_"+this.MSHORT[(this.state.selectedMonths&&this.state.selectedMonths.length===1)?this.state.selectedMonths[0]:0]+"_"+this.YEAR+".zip"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),3000); }
+    this.setState({ pngBusy:false, pngOpen:false });
+  };
   pickPDF = ()=>{ this.setState({ dlOpen:false }); this.exportPDF(); };
   pickWord = ()=>{ this.setState({ dlOpen:false }); this.exportWord(); };
 
   // ---- founder (top nav) ----
   toggleBrad = ()=> this.setState(s=>({ bradOpen:!s.bradOpen }));
   closeBrad = ()=> this.setState({ bradOpen:false });
-  setBradTitle = (e)=> this.setState({ bradTitle: e.target.value });
+  setBradName = (e)=>{ const v=e.target.value; this.setState(s=>{ const founders=s.founders.slice(); founders[s.founderIndex]={...founders[s.founderIndex], name:v}; return {founders, bradName:v}; }); };
+  setBradTitle = (e)=>{ const v=e.target.value; this.setState(s=>{ const founders=s.founders.slice(); founders[s.founderIndex]={...founders[s.founderIndex], title:v}; return {founders, bradTitle:v}; }); };
+  selectFounder = (i)=> this.setState(s=>{ const f=s.founders[i]||s.founders[0]; return { founderIndex:i, bradName:f.name, bradTitle:f.title, photo:f.photo, photoColor:f.photoColor, bradOpen:true }; });
+  addFounder = ()=> this.setState(s=>{ const founders=[...s.founders, { name:"New founder", title:"", photo:null, photoColor:"#1e4a85" }]; const i=founders.length-1; const f=founders[i]; return { founders, founderIndex:i, bradName:f.name, bradTitle:f.title, photo:f.photo, photoColor:f.photoColor, bradOpen:true }; });
 
   // ---- "Powered by" team selector ----
-  TEAMS = ["Connetic Ventures", "Havener Capital Group", "VCAFX Fund", "Advisorpedia"];
+  TEAMS = ["Culture Foundry Ventures", "Havener Capital Group", "VCAFX Fund", "Advisorpedia"];
   toggleTeam = ()=> this.setState(s=>({ teamOpen:!s.teamOpen, bradOpen:false }));
   closeTeam = ()=> this.setState({ teamOpen:false });
   pickTeam = (name)=> this.setState({ team:name, teamOpen:false });
@@ -1096,7 +1444,7 @@ class Component extends DCLogic {
   };
   FALLBACK_GEN = [
     "Access is the whole thesis.\n\nWhen more people can invest early, more people share in what gets built. That's the firm we set out to build — and the one we're still building today. 📈",
-    "Venture capital shouldn't require an invitation.\n\nIt should require a thesis you believe in. At Connetic, we're opening doors that were closed for far too long.",
+    "Venture capital shouldn't require an invitation.\n\nIt should require a thesis you believe in. At Culture Foundry, we're opening doors that were closed for far too long.",
     "The best founders aren't always where the money already is.\n\nThey're in the cities everyone overlooks. Our job is to find them — and to bring more investors along for the ride.",
   ];
   generateText = async ()=>{
@@ -1107,7 +1455,7 @@ class Component extends DCLogic {
     const apply = (txt)=>{ if(this._genToken===token){ this.updateCur("body", this.cleanLinkedIn(txt)); this.setState({genBusy:false}); } };
     try{
       if(window.claude && window.claude.complete){
-        const prompt='Write ONE LinkedIn post (max 110 words) in the voice of Brad Zapp, President & Fund Manager at Connetic RIA LLC, an accessible venture-capital firm focused on democratizing early-stage investing. Short, punchy lines. At most 1-2 tasteful emojis. No surrounding quotation marks. '+(seed? ('Build on this seed: "'+seed+'". ') : '')+'Return only the post text.';
+        const prompt='Write ONE LinkedIn post (max 110 words) in the voice of Bill Remington, President & Fund Manager at Culture Foundry RIA LLC, an accessible venture-capital firm focused on democratizing early-stage investing. Short, punchy lines. At most 1-2 tasteful emojis. No surrounding quotation marks. '+(seed? ('Build on this seed: "'+seed+'". ') : '')+'Return only the post text.';
         const res=await window.claude.complete(prompt);
         if(this._genToken!==token) return; // cancelled — discard
         if(res) apply(res); else this.setState({genBusy:false});
@@ -1215,11 +1563,12 @@ class Component extends DCLogic {
         } else if(p.hasMedia){
           media=`<div class="media"><div class="ph">${this.esc(this.fileName(p.monthIndex,it.num))}</div></div>`;
         }
-        const footerCta = (typeof p.footer==="number" && this.FOOTERS[p.footer]) ? `<div class="cta">${this.esc(this.FOOTERS[p.footer])}</div>` : "";
+        const footerRaw = (typeof p.footer==="string") ? p.footer : ((typeof p.footer==="number" && this.FOOTERS[p.footer]) || "");
+        const footerCta = footerRaw.trim() ? `<div class="cta">${this.esc(footerRaw)}</div>` : "";
         body += `<div class="page">
           <div class="post">
             <div class="eyebrow">${this.esc(g.title)} · Post #${it.num}</div>
-            <div class="hd"><img class="av" src="${this.esc(this.state.photo)}"/><div><div class="nm">${this.esc(this.BRAD_NAME)}</div><div class="tl">${this.esc(this.BRAD_TITLE)}</div><div class="mt">${this.esc(p.time)} · 🌐</div></div></div>
+            <div class="hd"><img class="av" src="${this.esc(this.state.photo)}"/><div><div class="nm">${this.esc(this.state.bradName||this.BRAD_NAME)}</div><div class="tl">${this.esc(this.state.bradTitle||this.BRAD_TITLE)}</div><div class="mt">${this.esc(p.time)} · 🌐</div></div></div>
             <div class="bd">${this.fmtRich(p.body)}</div>
             ${footerCta}
             ${media}
@@ -1231,7 +1580,7 @@ class Component extends DCLogic {
         </div>`;
       });
     });
-    const html=`<!doctype html><html><head><meta charset="utf-8"><title>Connetic — Brad Zapp posts</title>
+    const html=`<!doctype html><html><head><meta charset="utf-8"><title>Culture Foundry — Bill Remington posts</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
       *{box-sizing:border-box;font-family:-apple-system,Segoe UI,Roboto,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
@@ -1271,12 +1620,12 @@ class Component extends DCLogic {
     });
     const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head>
     <body style="font-family:Calibri,Arial,sans-serif;color:#222;">
-      <h1>Connetic — Brad Zapp · Founder-Led Posts</h1>
+      <h1>Culture Foundry — Bill Remington · Founder-Led Posts</h1>
       <p style="color:#666;">${this.esc(this.BRAD_TITLE)}</p>
       ${body}
     </body></html>`;
     const blob=new Blob(["\ufeff"+html], {type:"application/msword"});
-    this.dlBlob("Connetic_Brad_Posts_"+this.YEAR+".doc", blob);
+    this.dlBlob("Culture Foundry_Brad_Posts_"+this.YEAR+".doc", blob);
   };
 
   buildPayload(){
@@ -1285,14 +1634,14 @@ class Component extends DCLogic {
     groups.forEach(g=> g.items.forEach(it=>{
       const p=it.post;
       posts.push({
-        author:this.BRAD_NAME, title:this.BRAD_TITLE,
+        author:this.state.bradName||this.BRAD_NAME, title:this.state.bradTitle||this.BRAD_TITLE,
         month:this.MONTHS[p.monthIndex], year:this.YEAR, number:it.num,
         body:p.body,
         graphic: p.hasMedia ? this.fileName(p.monthIndex, it.num) : null,
         channel:"linkedin", status:"draft",
       });
     }));
-    return { account:"Connetic Social", exportedAt:new Date().toISOString(), count:posts.length, posts };
+    return { account:"Culture Foundry Social", exportedAt:new Date().toISOString(), count:posts.length, posts };
   }
   sendModal(kind){
     const count=this.state.posts.length;
@@ -1303,14 +1652,14 @@ class Component extends DCLogic {
   sendReview = ()=> this.sendModal("review");
   downloadPayload = ()=>{
     const blob=new Blob([JSON.stringify(this.buildPayload(),null,2)], {type:"application/json"});
-    this.dlBlob("Connetic_HubSpot_"+this.YEAR+".json", blob);
+    this.dlBlob("Culture Foundry_HubSpot_"+this.YEAR+".json", blob);
   };
   closeModal = ()=> this.setState({ modal:null });
   stop = (e)=>{ e.stopPropagation(); };
 
   renderVals(){
     const s=this.state;
-    const ACCENT = this.props.accentColor || "#C2A24A";
+    const ACCENT = this.props.accentColor || "#6818F8";
     const TARGET = this.props.monthlyTarget || 12;
     const SHOW_ENGAGEMENT = this.props.showEngagement !== false;
     const counts={}; s.posts.forEach(p=>{ counts[p.monthIndex]=(counts[p.monthIndex]||0)+1; });
@@ -1324,6 +1673,42 @@ class Component extends DCLogic {
         badgeStyle:`min-width:18px; height:18px; padding:0 5px; border-radius:999px; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; background:${sel?'rgba(74,67,50,0.14)':'#f3ecda'}; color:${sel?'#6b6045':ACCENT};`,
       };
     });
+
+    const allSel = s.selectedMonths.length===this.MONTHS.length;
+    const curMi = (s.selectedMonths[0]!=null) ? s.selectedMonths[0] : this.CURRENT;
+    const monthOptions=this.MONTHS.map((full,idx)=>{
+      const n=counts[idx]||0;
+      return { value:String(idx), text: full };
+    });
+    const monthSelectValue = allSel ? "all" : String(curMi);
+    const dispYear = this.state.year || this.YEAR;
+    const yearOptions=[this.YEAR-1, this.YEAR, this.YEAR+1].map(y=>({ value:String(y), text:String(y) }));
+    const yearSelectValue = String(dispYear);
+    const pickerTitle = allSel ? ("All months \u00b7 "+dispYear) : (this.MONTHS[curMi]+" "+dispYear);
+    const curCount = counts[curMi]||0;
+    const onCurInc = ()=> this.setMonthCount(curMi, curCount+1);
+    const onCurDec = ()=> this.setMonthCount(curMi, curCount-1);
+    const impCur = (s.importStatus && s.importStatus.mi===curMi) ? s.importStatus : null;
+    const navDropTitle = impCur ? impCur.text : "Import posts from Word";
+    const navDropHint = impCur ? (impCur.error ? "Number each post 1, 2, 3… then retry." : "") : "Drop a .docx or click to upload";
+    const navDropColor = impCur ? (impCur.error ? "#c0392b" : "#1e7a46") : "#3b3b38";
+    const cMode = (s.contentMode && s.contentMode[curMi]) || null;
+    const segManualActive = cMode==="manual";
+    const segImportActive = cMode==="import";
+    const showImportDrop = segImportActive;
+    const setModeManual = ()=>{ const was=((this.state.contentMode||{})[curMi])==="manual"; this.setState(st=>{ const cm={...(st.contentMode||{})}; cm[curMi]="manual"; return {contentMode:cm}; }, ()=>{ if(!was) this.addPost(curMi); }); };
+    const setModeImport = ()=> this.setState(st=>{ const cm={...(st.contentMode||{})}; cm[curMi]="import"; return {contentMode:cm}; });
+    const segBase = "padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; transition:.14s;";
+    const segFilled = "background:#1e4a85; color:#fff; border:1px solid #1e4a85; box-shadow:0 3px 10px rgba(30,74,133,.28);";
+    const segFilledActive = "background:#163a69; color:#fff; border:1px solid #163a69; box-shadow:0 2px 6px rgba(30,74,133,.35);";
+    const segFilledOrange = "background:linear-gradient(135deg,#FDA71A 0%,#FD5920 100%); color:#fff; border:none; box-shadow:0 3px 10px rgba(253,89,32,.28);";
+    const segFilledOrangeActive = "background:linear-gradient(135deg,#e8930f 0%,#e34c17 100%); color:#fff; border:none; box-shadow:0 2px 6px rgba(253,89,32,.38);";
+    const segManualStyle = segBase + (segManualActive ? segFilledOrangeActive : segFilledOrange);
+    const segImportStyle = segBase + (segImportActive ? segFilledActive : segFilled);
+    const navOnDocFile = (e)=>{ const f=e.target.files&&e.target.files[0]; if(f){ this.importDocx(f, curMi); this.setState(st=>{ const cm={...(st.contentMode||{})}; cm[curMi]="import"; return {contentMode:cm}; }); } e.target.value=""; };
+    const navOnDragOver = (e)=>{ e.preventDefault(); e.currentTarget.style.borderColor="#1e4a85"; e.currentTarget.style.background="#eef2fb"; };
+    const navOnDragLeave = (e)=>{ e.currentTarget.style.borderColor="#cfceca"; e.currentTarget.style.background="#fbfbfa"; };
+    const navOnDrop = (e)=>{ e.preventDefault(); e.currentTarget.style.borderColor="#cfceca"; e.currentTarget.style.background="#fbfbfa"; const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) this.importDocx(f, curMi); };
 
     const sections=[...s.selectedMonths].sort((a,b)=>a-b).map(mi=>{
       const inMonth=s.posts.map((p,i)=>({p,i})).filter(o=>o.p.monthIndex===mi);
@@ -1340,10 +1725,18 @@ class Component extends DCLogic {
           cardBorder: isExp ? ACCENT : "#e0dfdb",
           bodyDisplay: p.body || "Tap to write Brad's post…",
           bodyColor: p.body ? "#1d2226" : "#a0a09b",
-          hasFooter: typeof p.footer==="number" && !!this.FOOTERS[p.footer],
-          footerText: (typeof p.footer==="number" && this.FOOTERS[p.footer]) || "",
+          hasFooter: (typeof p.footer==="string") ? !!p.footer.trim() : (typeof p.footer==="number" && !!this.FOOTERS[p.footer]),
+          footerText: (typeof p.footer==="string") ? p.footer : ((typeof p.footer==="number" && this.FOOTERS[p.footer]) || ""),
           onDelete:(e)=>{ e.stopPropagation(); this.deletePost(idx); },
           onGraphic:(e)=>{ e.stopPropagation(); this.openGfx(idx); },
+          onCustomize:(e)=>{ e.stopPropagation(); this.openGfx(idx); },
+          onGraphicOn:(e)=>{ e.stopPropagation(); this.enableMedia(idx); },
+          onGraphicOff:(e)=>{ e.stopPropagation(); this.setMediaOff(idx, true); },
+          onAddGraphic:(e)=>{ e.stopPropagation(); this.enableMedia(idx); },
+          segGraphicStyle:"padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:#fff;color:#0e2236;cursor:pointer;",
+          segNoneStyle:"padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:transparent;color:#fff;cursor:pointer;",
+          mediaVisible: !!(p.hasMedia && !p.mediaOff),
+          showAddBar: !(p.hasMedia && !p.mediaOff),
           verified:p.verified, hasMedia:p.hasMedia,
           degreeLabel:this.degLabel(p.degree), time:p.time, body:p.body||"",
           hasGraphic:!!g, noGraphic:!g,
@@ -1356,15 +1749,24 @@ class Component extends DCLogic {
           showEngagement:SHOW_ENGAGEMENT,
         };
       });
+      const imp=s.importStatus, impHere=!!(imp && imp.mi===mi);
       return {
         title:this.MONTHS[mi]+" "+this.YEAR,
         count:inMonth.length, empty:inMonth.length===0,
         countLabel: inMonth.length===1? "1 post" : inMonth.length+" posts",
         targetLabel:"target "+TARGET,
         cards,
+        onDragOverDoc:(e)=>{ e.preventDefault(); e.currentTarget.style.borderColor="#1e4a85"; e.currentTarget.style.background="#eef2fb"; },
+        onDragLeaveDoc:(e)=>{ e.currentTarget.style.borderColor="#cfceca"; e.currentTarget.style.background="#fbfbfa"; },
+        onDropDoc:(e)=>{ e.preventDefault(); e.currentTarget.style.borderColor="#cfceca"; e.currentTarget.style.background="#fbfbfa"; const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) this.importDocx(f, mi); },
+        onDocFile:(e)=>{ const f=e.target.files&&e.target.files[0]; if(f) this.importDocx(f, mi); e.target.value=""; },
+        dropColor: impHere ? (imp.error? "#c0392b" : "#1e7a46") : "#3b3b38",
+        dropTitle: impHere ? imp.text : "Import posts from Word",
+        dropHint: impHere ? (imp.error ? "Number each post 1, 2, 3… in the document, then try again." : "") : "Drop a .docx here or click to upload — posts load in numerical order",
         onInc:()=> this.setMonthCount(mi, inMonth.length+1),
         onDec:()=> this.setMonthCount(mi, inMonth.length-1),
         onAdd:()=> this.addPost(mi),
+        addWriterContent:()=> this.addPost(mi),
       };
     });
 
@@ -1381,15 +1783,15 @@ class Component extends DCLogic {
 
     const exIdx=s.expandedIndex;
     const cur=(exIdx!=null && s.posts[exIdx]) ? s.posts[exIdx] : (s.posts[0] || this.blankPost(this.CURRENT));
-    const curFooter = (cur && typeof cur.footer==="number") ? cur.footer : null;
-    const footerOpts = [{ label:"None", preview:"", idx:null }].concat(this.FOOTERS.map((_,i)=>({ label:this.FOOTER_LABELS[i], preview:" · "+this.footerPreview(i), idx:i }))).map(o=>{
-      const on = curFooter===o.idx;
-      return {
-        label:o.label, preview:o.preview,
-        onClick:()=> this.updateCur("footer", o.idx),
-        style:`display:flex; align-items:center; gap:0; text-align:left; padding:9px 11px; border-radius:8px; cursor:pointer; font-size:11.5px; line-height:1.3; border:1px solid ${on?'#1e4a85':'#e0dfdb'}; background:${on?'#eef2fb':'#fff'}; color:#3b3b38;`,
-      };
-    });
+    const isCustomFooter = typeof cur.footer === "string";
+    const footerOpts = [
+      { label:"None", preview:"", idx:null, on: cur.footer==null },
+      { label:"Custom", preview:" · write your own", idx:"__custom", on: isCustomFooter },
+    ].concat(this.FOOTERS.map((_,i)=>({ label:this.FOOTER_LABELS[i], preview:" · "+this.footerPreview(i), idx:i, on: cur.footer===i }))).map(o=>({
+      label:o.label, preview:o.preview,
+      onClick:()=> this.updateCur("footer", o.idx==="__custom" ? (typeof cur.footer==="string"?cur.footer:"") : o.idx),
+      style:`display:flex; align-items:center; gap:0; text-align:left; padding:9px 11px; border-radius:8px; cursor:pointer; font-size:11.5px; line-height:1.3; border:1px solid ${o.on?'#1e4a85':'#e0dfdb'}; background:${o.on?'#eef2fb':'#fff'}; color:#3b3b38;`,
+    }));
     const rowStyle="width:100%; display:flex; align-items:center; justify-content:space-between; background:#faf9f7; border:1px solid #ececea; border-radius:9px; padding:11px 13px; cursor:pointer; margin-top:4px;";
     const m=s.modal;
     const cg=cur.graphic;
@@ -1406,7 +1808,11 @@ class Component extends DCLogic {
     return {
       isGallery:true,
       cloudReady:s.cloud.ready,
-      bradName:this.BRAD_NAME, bradTitle:s.bradTitle,
+      bradName:s.bradName||this.BRAD_NAME, bradTitle:s.bradTitle,
+      founderOpts: s.founders.map((f,i)=>({ value:String(i), text:f.name||"Untitled founder" })),
+      founderSelectValue: String(s.founderIndex),
+      onFounderSelect:(e)=> this.selectFounder(+e.target.value),
+      setBradName:this.setBradName, addFounder:this.addFounder,
       photo:s.photo, photoColor:s.photoColor,
       photoBg: s.photo ? `url("${s.photo}")` : "none",
       hasPhoto:!!s.photo, noPhoto:!s.photo,
@@ -1423,11 +1829,16 @@ class Component extends DCLogic {
       }),
       onAvatarFile:this.onAvatarFile, removeAvatar:()=>this.setState({photo:null}),
       genBusy:s.genBusy, genLabel: s.genBusy? "Generating…" : "Generate from Claude",
-      generateText:this.generateText, cleanText:this.cleanText, onBodyPaste:this.onBodyPaste, pasteClean:this.pasteClean, cancelGen:this.cancelGen, cancelWriting:this.cancelWriting, saveText:this.saveText, saveTextLabel: s.textSaved? "Saved" : "Save text", footerOpts,
+      generateText:this.generateText, cleanText:this.cleanText, onBodyPaste:this.onBodyPaste, pasteClean:this.pasteClean, cancelGen:this.cancelGen, cancelWriting:this.cancelWriting, saveText:this.saveText, saveTextLabel: s.textSaved? "Saved" : "Save text", footerOpts, footerIsCustom:isCustomFooter, footerCustomText: isCustomFooter? cur.footer : "", setFooterCustom:(e)=> this.updateCur("footer", e.target.value),
       linkOpen:s.linkOpen, toggleLink:this.toggleLink, linkDraft:s.linkDraft, setLinkDraft:this.setLinkDraft, saveLink:this.saveLink,
       hasLinkedProject:!!cur.linkedProject, noLinkedProject:!cur.linkedProject, linkedProjectUrl:cur.linkedProject||"", unlink:this.unlink, openLinked:this.openLinked,
       placeholderBg:this.PLACEHOLDER_BG,
-      monthChips, sections, actions, swatches,
+      monthChips, monthOptions, monthSelectValue, pickerTitle,
+      yearOptions, yearSelectValue, onYearSelect:(e)=>{ const v=e.target.value; if(v) this.setState({year:+v}); },
+      curCount, onCurInc, onCurDec, targetTop:"target "+TARGET, pickerCountLabel: (s.posts.filter(p=> allSel ? true : p.monthIndex===curMi).length)+" post"+((s.posts.filter(p=> allSel ? true : p.monthIndex===curMi).length)===1?"":"s"),
+      navDropTitle, navDropHint, navDropColor, segManualActive, segImportActive, showImportDrop, setModeManual, setModeImport, segManualStyle, segImportStyle, navOnDocFile, navOnDragOver, navOnDragLeave, navOnDrop,
+      onMonthSelect:(e)=>{ const v=e.target.value; if(v==="all") this.setState({selectedMonths:this.MONTHS.map((_,i)=>i)}); else this.setState({selectedMonths:[+v]}); },
+      sections, actions, swatches,
       openBuilder:this.openBuilder,
       exportPDF:this.exportPDF, exportWord:this.exportWord, sendHubspot:this.sendHubspot, sendReview:this.sendReview,
       selectAll:()=> this.setState({selectedMonths:this.MONTHS.map((_,i)=>i)}),
@@ -1460,6 +1871,7 @@ class Component extends DCLogic {
       setDraftText:(e)=>this.setDraft({text:e.target.value, autoText:false}),
       setDraftEyebrow:(e)=>this.setDraft({eyebrow:e.target.value}),
       resetDraftText:()=>{ const pp=gx&&s.posts[gx.postIdx]; this.setDraft({ text:this.deriveText(pp&&pp.body), autoText:true }); },
+      regenPhrase:()=>{ const pp=gx&&s.posts[gx.postIdx]; const cands=this.poignantLines(pp&&pp.body); const cur=(draft&&draft.text)||""; let pick=cands[Math.floor(Math.random()*cands.length)]; let tries=0; while(cands.length>1 && pick===cur && tries<10){ pick=cands[Math.floor(Math.random()*cands.length)]; tries++; } this.setDraft({ text:pick, autoText:false }); },
       draftAuto: !!(draft&&draft.autoText!==false),
       pickStatement:()=>this.setDraft({template:"statement"}),
       pickPhoto:()=>this.setDraft({template:"photoquote"}),
@@ -1494,12 +1906,22 @@ class Component extends DCLogic {
       galleryHtml: {__html:this.gfxGalleryHtml(draft)},
       pickImageDelegate: this.pickImageDelegate,
       tplHtml:{__html:this.gfxTplHtml(draft)}, varHtml:{__html:this.gfxVarHtml(draft)}, sizeHtml:{__html:this.gfxSizeHtml(draft)},
+      txtHtml:{__html:this.gfxTxtHtml(draft)}, bgHtml:{__html:this.gfxBgHtml(draft)},
+      onTxtClick:this.onTxtClick, onBgClick:this.onBgClick,
+      colorLocked: !(draft&&draft.template),
+      colorRowStyle: (draft&&draft.template) ? "display:flex; gap:10px; flex-wrap:wrap;" : "display:flex; gap:10px; flex-wrap:wrap; opacity:0.4; filter:grayscale(1); pointer-events:none;",
       onTplClick:this.onTplClick, onVarClick:this.onVarClick, onSizeClick:this.onSizeClick,
       draftGraphicHtml: draft? {__html:this.gfxHtml(draft)} : {__html:""},
       dlOpen:s.dlOpen, toggleDl:this.toggleDl, closeDl:this.closeDl, pickPDF:this.pickPDF, pickWord:this.pickWord,
+      accent: ACCENT,
+      saveNow:this.saveNow, saveBtnLabel: s.savedFlash ? ("Saved \u2713 "+this.fmtSavedAt(s.savedAt)) : (s.savedAt ? ("Saved "+this.fmtSavedAt(s.savedAt)) : "Save"),
+      pickPNG:this.pickPNG, closePng:this.closePng, setPngCount:this.setPngCount, runPngExport:this.runPngExport,
+      pngOpen:s.pngOpen, pngBusy:!!s.pngBusy, pngIdle:!s.pngBusy, pngCount:s.pngCount||1, pngMax:Math.max(1,this.graphicIdxs().length),
+      pngStatus:s.pngStatus||"", pngCountLabel:((s.pngCount||1)>=this.graphicIdxs().length ? "All "+this.graphicIdxs().length : String(s.pngCount||1)),
+      pngSubtitle:(this.graphicIdxs().length+" graphic"+(this.graphicIdxs().length===1?"":"s")+" · exported at each set format"),
       closeGfx:this.closeGfx, applyGfx:this.applyGfx, removeGfx:this.removeGfx,
       brandOpen:s.brandOpen, openBrand:this.openBrand, closeBrand2:this.closeBrand2, brandPick:this.brandPick,
-      brandSubtitle: gx ? "Connetic founder library · pick one to edit for this post" : "Connetic founder library · pick one to start editing",
+      brandSubtitle: gx ? "Culture Foundry founder library · pick one to edit for this post" : "Culture Foundry founder library · pick one to start editing",
       brandGridHtml:{__html:this.brandGridHtml(draft)},
 
       // modal
@@ -1512,7 +1934,7 @@ class Component extends DCLogic {
         ? {__html:"<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 12s-3.5-7-10-7-10 7-10 7 3.5 7 10 7 10-7 10-7z'/><circle cx='12' cy='12' r='3'/></svg>"}
         : {__html:"<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 2L11 13'/><path d='M22 2l-7 20-4-9-9-4 20-7z'/></svg>"},
       modalTitle: (m&&m.kind==="review") ? "Send to client for review" : "Send to HubSpot",
-      modalSubtitle: (m&&m.kind==="review") ? "Connetic · Brad Zapp · all months" : "Connetic Social · all months",
+      modalSubtitle: (m&&m.kind==="review") ? "Culture Foundry · Bill Remington · all months" : "Culture Foundry Social · all months",
       modalSendingText: (m? m.count:0)+((m&&m.kind==="review") ? " posts packaged for review…" : " posts pushing to HubSpot…"),
       modalSendingSub: (m&&m.kind==="review") ? "Building a shareable approval link with every caption and graphic." : "Transferring copy, emojis, formatting, and graphics so your marketing manager can schedule them.",
       modalDoneTitle: (m? m.count:0)+((m&&m.kind==="review") ? " posts ready for review" : " posts sent to HubSpot"),

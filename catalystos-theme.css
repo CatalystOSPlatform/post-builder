@@ -1,0 +1,65 @@
+/* ============================================================
+   catalystos-theme.css — CatalystOS palette + type tokens
+   ------------------------------------------------------------
+   Portable theme: colors + fonts only (no layout components).
+   Copy this one file into any app to get the identical palette
+   and type.
+
+   USAGE
+   1. Load the fonts + theme in <head> (fonts MUST come first):
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="catalystos-theme.css">
+
+   2. Reference the variables instead of raw hex/px:
+        Surface        → var(--cos-mist)      ink → var(--cos-navy)
+        Accent         → var(--cos-accent)    (tint --cos-accent-tint,
+                                               focus ring --cos-accent-ring)
+        Primary button → background: var(--cos-grad-violet)
+        Hero/graphic   → var(--cos-grad-spectrum)  (blue→violet→magenta→orange)
+        Headings       → font-family: var(--cos-font-display)  (Manrope)
+        Body           → font-family: var(--cos-font-body)     (Inter)
+
+   3. Optional: add class="cos-base" to <body> — applies the surface,
+      ink, body font, Manrope headings, and accent focus rings automatically.
+   ============================================================ */
+
+:root {
+  /* ---- ink / surface ---- */
+  --cos-navy:       #0B1A4A;   /* primary ink — deep brand navy            */
+  --cos-navy-deep:  #081A53;   /* darkest navy (chrome backgrounds)        */
+  --cos-mist:       #F4F5FA;   /* misty page surface                       */
+  --cos-mist-2:     #ECEEF6;   /* slightly deeper surface / wells          */
+  --cos-line:       #E0E3EF;   /* hairline borders                         */
+  --cos-muted:      #6A72A0;   /* secondary / supporting text              */
+
+  /* ---- accent (violet) ---- */
+  --cos-accent:        #6818F8;
+  --cos-accent-strong: #5311D6;             /* pressed / hover              */
+  --cos-accent-tint:   #EEE8FE;             /* selected fills, soft chips   */
+  --cos-accent-ring:   rgba(104,24,248,0.28); /* focus ring                 */
+
+  /* ---- signature gradients ---- */
+  --cos-grad-violet:   linear-gradient(135deg, #1921FE 0%, #6818F8 100%);
+  --cos-grad-spectrum: linear-gradient(90deg, #1921FE 0%, #6818F8 32%, #C1229C 58%, #FD5920 82%, #FDA71A 100%);
+
+  /* ---- type ---- */
+  --cos-font-display: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --cos-font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+/* Opt-in base: put class="cos-base" on <body> (or an app root). */
+.cos-base {
+  background: var(--cos-mist);
+  color: var(--cos-navy);
+  font-family: var(--cos-font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.cos-base h1, .cos-base h2, .cos-base h3,
+.cos-base h4, .cos-base h5, .cos-base h6 {
+  font-family: var(--cos-font-display);
+}
+.cos-base :focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--cos-accent-ring);
+}
