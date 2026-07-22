@@ -58,7 +58,7 @@
 
     <!-- app title bar — brand navy -->
     <div style="flex:none; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px clamp(14px,3vw,30px); background:var(--cos-navy-deep); position:relative; user-select:none; flex-wrap:wrap;">
-      <div style="font-family:var(--cos-font-display); font-size:clamp(18px,3.4vw,26px); font-weight:800; letter-spacing:-0.02em; color:#fff;">Post Builder: <span style="color:#FD7A2B;">Culture Foundry</span></div>
+      <div style="font-family:var(--cos-font-display); font-size:clamp(18px,3.4vw,26px); font-weight:800; letter-spacing:-0.02em; color:#fff;">Post Builder: <span style="color:#FD5920;">Culture Foundry</span></div>
       <button class="pmc-tool" onClick="{{ openBrand }}" style="flex:none; display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.28); padding:9px 16px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; color:#fff;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         Brand Templates
@@ -231,7 +231,7 @@
       <!-- cluster: add content -->
       <div style="display:flex; align-items:center; gap:12px 14px; flex:none; flex-wrap:wrap; justify-content:center;">
         <div style="display:inline-flex; align-items:center; gap:8px; flex:none;">
-          <button onClick="{{ setModeManual }}" style="{{ segManualStyle }}">Use Post Writer Content</button>
+          <button onClick="{{ setModeManual }}" style="{{ segManualStyle }}">{{ manualBtnLabel }}</button>
           <button onClick="{{ setModeImport }}" style="{{ segImportStyle }}">Upload Content Doc</button>
         </div>
         <sc-if value="{{ showWriterStatus }}" hint-placeholder-val="{{ false }}">
@@ -305,9 +305,9 @@
           </sc-if>
 
 
-          <div style="columns:338px auto; column-gap:22px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(338px, 1fr)); gap:22px; align-items:start;">
             <sc-for list="{{ sec.cards }}" as="c" hint-placeholder-count="3">
-              <div style="display:flex; flex-direction:column; gap:9px; break-inside:avoid; margin-bottom:22px;">
+              <div style="display:flex; flex-direction:column; gap:9px;">
                 <div style="display:flex; align-items:center; justify-content:space-between; padding:0 3px;">
                   <span style="font-size:12.5px; font-weight:700; color:#6a6a66; letter-spacing:0.01em;">Post #{{ c.num }}</span>
                   <div style="display:flex; align-items:center; gap:7px;">
@@ -336,7 +336,7 @@
                 </sc-if>
                 <sc-if value="{{ c.expanded }}" hint-placeholder-val="{{ false }}">
                   <div style="padding:10px 14px 2px;">
-                    <textarea value="{{ body }}" onInput="{{ setBody }}" onPaste="{{ onBodyPaste }}" rows="6" placeholder="Write Brad's post or paste from Word…" style="width:100%; padding:11px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.5; color:#1d2226; resize:vertical;"></textarea>
+                    <textarea value="{{ body }}" ref="{{ autoGrowRef }}" onInput="{{ setBody }}" onPaste="{{ onBodyPaste }}" rows="6" placeholder="Write Brad's post or paste from Word…" style="width:100%; padding:11px; border:1px solid #dcdbd7; border-radius:8px; font-size:13.5px; line-height:1.5; color:#1d2226; resize:vertical; overflow:hidden; field-sizing:content; min-height:140px; box-sizing:border-box;"></textarea>
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-top:5px;">
                       <span style="font-size:10.5px; color:#a0a09b;">Paste from Word — auto-cleaned, emojis kept</span>
                       <span style="font-size:11px; color:#a0a09b;">{{ bodyCount }} chars</span>
@@ -345,6 +345,9 @@
                       <button onClick="{{ cancelWriting }}" class="pmc-back" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:#f4f4f2; border:1px solid #dcdbd7; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; color:#5e5e5a;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5e5e5a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Cancel</button>
                       <button onClick="{{ saveText }}" class="pmc-back" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background:#e7f7ee; border:1px solid #b6e3cb; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; color:#1f8a5b;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{{ saveTextLabel }}</button>
                     </div>
+                    <sc-if value="{{ showReloadWriter }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ reloadWriterVersion }}" class="pmc-back" style="width:100%; margin-top:7px; display:flex; align-items:center; justify-content:center; gap:6px; background:#fff4ec; border:1px solid #f6cba6; padding:8px 13px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; color:#c2530f;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c2530f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>Reload Post Writer Version</button>
+                    </sc-if>
                   </div>
                 </sc-if>
 
@@ -355,7 +358,7 @@
                   <div style="padding:0 14px 12px;">
                     <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#a0a09b; text-transform:uppercase; margin-bottom:7px;">Footer</div>
                     <div style="display:flex; flex-direction:column; gap:6px;">
-                      <sc-for list="{{ footerOpts }}" as="f" hint-placeholder-count="4">
+                      <sc-for list="{{ footerOpts }}" as="f" hint-placeholder-count="2">
                         <button onClick="{{ f.onClick }}" style="{{ f.style }}"><span style="font-weight:700;">{{ f.label }}</span><span style="opacity:.7;">{{ f.preview }}</span></button>
                       </sc-for>
                     </div>
@@ -1204,7 +1207,7 @@ class Component extends DCLogic {
           hasMedia: true,
           image: null,
           graphic: { template:tpl, variant:rnd(VARS), image, size:"square", autoText:true },
-          footer: 0,
+          footer: null,
           likes: String(680 + i*190 + mi*60),
           comments: String(34 + i*13),
           reposts: String(11 + i*7),
@@ -1844,7 +1847,7 @@ class Component extends DCLogic {
   _genToken = 0;
   cancelGen = ()=>{ this._genToken++; this.setState({genBusy:false}); };
   expandPost = (idx)=>{ const p=this.state.posts[idx]; this._editSnap={ idx, body:(p&&p.body)||"" }; this.setState({ expandedIndex:idx, linkOpen:false, textSaved:false }); };
-  saveText = ()=>{ const i=this.state.expandedIndex; if(i==null) return; const b=(this.state.posts[i]&&this.state.posts[i].body)||""; this._editSnap={ idx:i, body:b }; this.setState({ expandedIndex:null }); };
+  saveText = ()=>{ const i=this.state.expandedIndex; if(i==null) return; const b=(this.state.posts[i]&&this.state.posts[i].body)||""; this._editSnap={ idx:i, body:b }; this._persist(); this._cloudSave(true); const ts=Date.now(); try{ localStorage.setItem(this.SAVE_KEY+"_savedAt", String(ts)); }catch(e){} this.setState({ expandedIndex:null, savedFlash:true, savedAt:ts }); setTimeout(()=>this.setState({savedFlash:false}), 2200); };
   cancelWriting = ()=>{
     if(this.state.genBusy){ this.cancelGen(); return; }
     const snap=this._editSnap;
@@ -1904,6 +1907,22 @@ class Component extends DCLogic {
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(()=>URL.revokeObjectURL(url),3000);
     });
+  };
+  reloadWriterVersion = (idx)=>{
+    const p=this.state.posts[idx];
+    if(!p || !p.importKey){ return; }
+    if(!(window.PBCloud && window.PBCloud.loadInbox)){
+      this.setState({ importStatus:{ mi:p.monthIndex, text:"Post Writer not connected yet — try again in a moment", error:true } });
+      return;
+    }
+    const [year,month,num]=p.importKey.split("-").map(Number);
+    window.PBCloud.loadInbox().then(items=>{
+      const it=(items||[]).find(x=> Number(x.year)===year && Number(x.month)===month && Number(x.postNumber)===num);
+      if(!it){ this.setState({ importStatus:{ mi:p.monthIndex, text:"No Post Writer version found for this post", error:true } }); return; }
+      const rev=String(it.sentAt || it.rev || it.body || "");
+      const body=(it.body!=null ? it.body : "").toString();
+      this.setState(s=>{ const posts=s.posts.slice(); const tp=posts[idx]; posts[idx]={...tp, body, importRev:rev}; return { posts, importStatus:{ mi:p.monthIndex, text:"Reloaded this post from Post Writer \u2713" } }; });
+    }).catch(e=>{ console.warn("reloadWriterVersion failed", e); this.setState({ importStatus:{ mi:p.monthIndex, text:"Couldn't reach Post Writer", error:true } }); });
   };
   loadWriterContent = (mi)=>{
     if(!(window.PBCloud && window.PBCloud.loadInbox)){
@@ -2203,6 +2222,8 @@ class Component extends DCLogic {
     const segFilledOrangeActive = "background:linear-gradient(135deg,#e8930f 0%,#e34c17 100%); color:#fff; border:none; box-shadow:0 2px 6px rgba(253,89,32,.38);";
     const segManualStyle = segBase + (segManualActive ? segFilledOrangeActive : segFilledOrange);
     const segImportStyle = segBase + (segImportActive ? segFilledActive : segFilled);
+    const curHasWriterContent = (s.contentMode||{})[curMi]==="manual" && s.posts.some(p=>p.monthIndex===curMi);
+    const manualBtnLabel = curHasWriterContent ? "Reload All Post Writer Content" : "Use Post Writer Content";
     const navOnDocFile = (e)=>{ const f=e.target.files&&e.target.files[0]; if(f){ this.importDocx(f, curMi); } e.target.value=""; };
     const navOnDragOver = (e)=>{ e.preventDefault(); e.currentTarget.style.borderColor="#1e4a85"; e.currentTarget.style.background="#eef2fb"; };
     const navOnDragLeave = (e)=>{ e.currentTarget.style.borderColor="#cfceca"; e.currentTarget.style.background="#fbfbfa"; };
@@ -2286,7 +2307,7 @@ class Component extends DCLogic {
     const footerOpts = [
       { label:"None", preview:"", idx:null, on: cur.footer==null },
       { label:"Custom", preview:" · write your own", idx:"__custom", on: isCustomFooter },
-    ].concat(this.FOOTERS.map((_,i)=>({ label:this.FOOTER_LABELS[i], preview:" · "+this.footerPreview(i), idx:i, on: cur.footer===i }))).map(o=>({
+    ].map(o=>({
       label:o.label, preview:o.preview,
       onClick:()=> this.updateCur("footer", o.idx==="__custom" ? (typeof cur.footer==="string"?cur.footer:"") : o.idx),
       style:`display:flex; align-items:center; gap:0; text-align:left; padding:9px 11px; border-radius:8px; cursor:pointer; font-size:11.5px; line-height:1.3; border:1px solid ${o.on?'#1e4a85':'#e0dfdb'}; background:${o.on?'#eef2fb':'#fff'}; color:#3b3b38;`,
@@ -2328,7 +2349,7 @@ class Component extends DCLogic {
       }),
       onAvatarFile:this.onAvatarFile, removeAvatar:()=>this.setState({photo:null}),
       genBusy:s.genBusy, genLabel: s.genBusy? "Generating…" : "Generate from Claude",
-      generateText:this.generateText, cleanText:this.cleanText, onBodyPaste:this.onBodyPaste, pasteClean:this.pasteClean, cancelGen:this.cancelGen, cancelWriting:this.cancelWriting, saveText:this.saveText, saveTextLabel: s.textSaved? "Saved" : "Save text", footerOpts, footerIsCustom:isCustomFooter, footerCustomText: isCustomFooter? cur.footer : "", setFooterCustom:(e)=> this.updateCur("footer", e.target.value),
+      generateText:this.generateText, cleanText:this.cleanText, onBodyPaste:this.onBodyPaste, pasteClean:this.pasteClean, cancelGen:this.cancelGen, cancelWriting:this.cancelWriting, saveText:this.saveText, saveTextLabel: s.textSaved? "Saved" : "Save text", reloadWriterVersion:()=>this.reloadWriterVersion(exIdx), showReloadWriter: !!(cur && cur.importKey), footerOpts, footerIsCustom:isCustomFooter, footerCustomText: isCustomFooter? cur.footer : "", setFooterCustom:(e)=> this.updateCur("footer", e.target.value),
       linkOpen:s.linkOpen, toggleLink:this.toggleLink, linkDraft:s.linkDraft, setLinkDraft:this.setLinkDraft, saveLink:this.saveLink,
       hasLinkedProject:!!cur.linkedProject, noLinkedProject:!cur.linkedProject, linkedProjectUrl:cur.linkedProject||"", unlink:this.unlink, openLinked:this.openLinked,
       placeholderBg:this.PLACEHOLDER_BG,
@@ -2343,7 +2364,7 @@ class Component extends DCLogic {
       emptyTitle: (s.writerMonths && s.writerMonths[curMi]) ? "Content from Post Writer is ready" : ("No posts for "+pickerTitle+" yet"),
       emptySubtitle: (s.writerMonths && s.writerMonths[curMi]) ? "Written posts for this month are waiting in Post Writer — pull them in, or start another way." : "Start this month by pulling written content, importing a Word doc, or adding a blank post to write yourself.",
       emptyAddManual:()=>{ this.setState(st=>{ const others=st.posts.filter(p=>p.monthIndex!==curMi); const fresh=this.blankPost(curMi); const posts=[...others, fresh]; const cm={...(st.contentMode||{})}; cm[curMi]="manual"; const idx=posts.length-1; this._editSnap={ idx, body:"" }; return { posts, contentMode:cm, expandedIndex:idx, linkOpen:false, textSaved:false }; }); },
-      navDropTitle, navDropHint, navDropColor, segManualActive, segImportActive, showImportDrop, setModeManual, setModeImport, segManualStyle, segImportStyle, navOnDocFile, navOnDragOver, navOnDragLeave, navOnDrop,
+      navDropTitle, navDropHint, navDropColor, segManualActive, segImportActive, showImportDrop, setModeManual, setModeImport, segManualStyle, segImportStyle, manualBtnLabel, navOnDocFile, navOnDragOver, navOnDragLeave, navOnDrop,
       onMonthSelect:(e)=>{ const v=e.target.value; if(v==="all") this.setState({selectedMonths:this.MONTHS.map((_,i)=>i)}); else this.setState({selectedMonths:[+v]}); },
       sections, actions, swatches,
       downloadDocxTemplate:this.downloadDocxTemplate,
@@ -2359,6 +2380,7 @@ class Component extends DCLogic {
       body:cur.body, bodyCount:[...(cur.body||"")].length,
 
       setBody:this.set("body"),
+      autoGrowRef:(el)=>{ if(el){ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; } },
       setLikes:this.setNum("likes"), setComments:this.setNum("comments"), setReposts:this.setNum("reposts"),
       onAvatarFile:this.onAvatarFile, removeAvatar:()=>this.setState({photo:null}),
 
