@@ -1043,14 +1043,14 @@ class Component extends DCLogic {
     if(!cands.length) return this.deriveText(body);
     // most poignant = most substantive line within range (longest by words), tie-break random
     let best=cands[0], bestW=best.split(/\s+/).length;
-    cands.forEach(t=>{ const w=t.split(/\s+/).length; if(w>bestW || (w===bestW && Math.random()<0.5)){ best=t; bestW=w; } });
+    cands.forEach(t=>{ const w=t.split(/\s+/).length; if(w>bestW){ best=t; bestW=w; } });
     return best;
   }
   randomGraphicFor(body, idx){
     const TEXT_TPL=["statement","megastatement","headline","spotlight","bigcenter","twopart","arrowpoint","socialcard"];
     if(this._tplSeed==null) this._tplSeed=Math.floor(Math.random()*TEXT_TPL.length);
     const tpl = (idx==null) ? TEXT_TPL[Math.floor(Math.random()*TEXT_TPL.length)] : TEXT_TPL[((idx|0)+this._tplSeed)%TEXT_TPL.length];
-    return { template:tpl, variant:(this.TPL_VAR[tpl]||"navy"), text:this.pickPoignant(body), eyebrow:"CULTURE FOUNDRY INSIGHTS", image:this.LIB[0].src, size:"square", autoText:false };
+    return { template:tpl, variant:(this.TPL_VAR[tpl]||"navy"), text:this.pickPoignant(body), eyebrow:"CULTURE FOUNDRY INSIGHTS", image:this.LIB[0].src, size:"square", autoText:true };
   }
   _applyInbox(items){
     if(!Array.isArray(items) || !items.length) return;
@@ -1864,7 +1864,7 @@ class Component extends DCLogic {
 
   gfxEff(post){
     const g=post && post.graphic; if(!g) return null;
-    return (g.autoText!==false) ? Object.assign({}, g, { text:this.deriveText(post.body) }) : g;
+    return (g.autoText!==false) ? Object.assign({}, g, { text:this.pickPoignant(post.body) }) : g;
   }
   addPost(mi){
     this.setState(p=>({ posts:[...p.posts, this.blankPost(mi)] }));
